@@ -12,4 +12,4 @@ When creating your respective folder within a manuscript directory, please use t
 ```
 In your respective folder, please add a ``` data ``` folder. Add sample data (or all the final data if possible) to demostrate the usability of the code.
 
-For suggestions/question, reach out to Yao.
+For suggestions/questions, reach out to Yao.
