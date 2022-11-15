@@ -1,0 +1,22 @@
+Parameter,Definition,Type,Default
+Filter Order,Butterworth Filter Order for FLP Data,int,6
+Filter Cutoff_High,Butterworth Filter highpass cutoff,float,0.015
+Filter Cutoff_Low,Butterworth Filter lowpass cutoff,float,0.015
+FLP Sampling Frequency,Flp Data Sampling Frequency,float,1
+TLCC Lag,Time period Before and after to perform TLCC,float,10
+Speed Bin Size,time bins to bin speed data to,float,0.25
+Running Threshold,cm/s Speed to set threshold,float,1
+Resting Threshold,cm/s Speed to set threshold,float,1
+Threshold Length,minimum running length,float,3
+Preceding Rest,required rest before running,float,10
+Time After Transition,Time period after running ends to consider for analysis,float,0
+Time Before Transition,Time period before running ends to consider for analysis,float,0
+ETA Before,Time period before running to include in ETA,float,5
+ETA After,Time period after running to include in ETA,float,5
+ETA Bin Size,Bin size to evaluate ETA at,float,0.5
+ETA Method,Method to evaluate ETA with,Interpolate' or 'Average',Interpolate'
+Baseline Length,minimum baseline length,float,30
+Baseline Buffer,Sections to trim from baseline before/after running,float,30
+baseline Chunks,sections length to cut long baseline periods into ,float,30
+Baseline analysis Method,Method to evaluate baseline epochs with,Max' or 'Median',Max'
+Running analysis Method,Method to evaluate running epochs with,Max' or 'Median',Max'
