@@ -1,0 +1,21 @@
+Filter Order, 6.0
+Filter Cutoff_High, 0.015
+Filter Cutoff_Low, 0.015
+FLP Sampling Frequency, 1.0
+TLCC Lag, 10.0
+Speed Bin Size, 0.25
+Running Threshold, 1.0
+Resting Threshold, 1.0
+Threshold Length, 3.0
+Preceding Rest, 10.0
+Time After Transition, 2.0
+Time Before Transition, -0.5
+ETA Before, 5.0
+ETA After, 5.0
+ETA Bin Size, 0.5
+ETA Method,  Interpolate
+Baseline Length, 90.0
+Baseline Buffer, 30.0
+Baseline Chunks, 90.0
+Baseline Analysis Method,  Median
+Running Analysis Method,  Median
