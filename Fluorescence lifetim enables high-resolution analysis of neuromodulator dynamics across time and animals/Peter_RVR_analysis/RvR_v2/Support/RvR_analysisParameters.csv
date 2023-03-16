@@ -10,7 +10,7 @@ Resting Threshold,cm/s Speed to set threshold,float,1
 Threshold Length,minimum running length,float,3
 Preceding Rest,required rest before running,float,10
 Time After Transition,Time period after running ends to consider for analysis,float,0
-Time Before Transition,Time period before running ends to consider for analysis,float,0
+Time Before Transition,Time period before running starts to consider for analysis,float,0
 ETA Before,Time period before running to include in ETA,float,5
 ETA After,Time period after running to include in ETA,float,5
 ETA Bin Size,Bin size to evaluate ETA at,float,0.5
