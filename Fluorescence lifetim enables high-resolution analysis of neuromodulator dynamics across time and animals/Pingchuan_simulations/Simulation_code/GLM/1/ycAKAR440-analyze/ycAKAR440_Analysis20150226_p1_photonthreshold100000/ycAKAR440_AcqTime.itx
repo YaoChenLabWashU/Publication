@@ -1,0 +1,59 @@
+IGOR
+WAVES ycAKAR440_AcqTime
+BEGIN
+   NaN
+   NaN
+   NaN
+   NaN
+   NaN
+   NaN
+   NaN
+   NaN
+   NaN
+   NaN
+   NaN
+   1.161250e+03
+   NaN
+   NaN
+   1.165283e+03
+   NaN
+   NaN
+   1.169317e+03
+   NaN
+   NaN
+   1.173250e+03
+   NaN
+   NaN
+   1.177100e+03
+   NaN
+   NaN
+   1.181383e+03
+   NaN
+   NaN
+   1.185033e+03
+   NaN
+   NaN
+   1.188850e+03
+   NaN
+   NaN
+   1.192883e+03
+   1.193200e+03
+   NaN
+   NaN
+   1.198650e+03
+   NaN
+   NaN
+   1.204700e+03
+   NaN
+   NaN
+   1.208583e+03
+   NaN
+   NaN
+   1.212450e+03
+   NaN
+   NaN
+   1.216117e+03
+   NaN
+END
+X SetScale/P x 0.000000, 1.000000, "", ycAKAR440_AcqTime
+
