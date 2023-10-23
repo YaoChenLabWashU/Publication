@@ -364,6 +364,7 @@ class dataset():
             windowStart = self.find_nearest(self.rawData['Time'], ETA_Changes[change][0])
             windowEnd = self.find_nearest(self.rawData['Time'], ETA_Changes[change][1])
 
+
             self.dataWindows['FLP Time'].append(self.rawData['Time'][windowStart:windowEnd].tolist())
             self.dataWindows['Intensity'].append(self.rawData['Intensity'][windowStart:windowEnd].tolist())
             self.dataWindows['Empirical Lifetime'].append(self.rawData['Empirical Lifetime'][windowStart:windowEnd].tolist())
@@ -507,7 +508,10 @@ class dataset():
     def FindMaxLength(self, lst):
         for lst_idx in range(len(lst)):
             lst[lst_idx] = [i for i in lst[lst_idx] if math.isnan(i) == False]
+
         maxLength = max(map(len, lst))
+
+
         return maxLength
 
 
