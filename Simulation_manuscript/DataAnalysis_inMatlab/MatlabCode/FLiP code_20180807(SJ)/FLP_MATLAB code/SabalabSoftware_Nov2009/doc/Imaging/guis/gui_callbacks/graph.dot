@@ -1,0 +1,28 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  closeConfigurationGUI -> setAcquisitionParameters;
+  executeGrabOneStackCallback -> executeGrabOneCallback;
+  genericKeyPressFunction -> executeFocusCallback;
+
+  calculateStackParameters [URL="calculateStackParameters.html"];
+  closeChannelGUI [URL="closeChannelGUI.html"];
+  closeConfigurationGUI [URL="closeConfigurationGUI.html"];
+  closeControlsGUI [URL="closeControlsGUI.html"];
+  closeCurrentFigures [URL="closeCurrentFigures.html"];
+  closeFigures [URL="closeFigures.html"];
+  closeImageGUI [URL="closeImageGUI.html"];
+  closeMotorGUI [URL="closeMotorGUI.html"];
+  closeStandardModeGUI [URL="closeStandardModeGUI.html"];
+  editConfiguration [URL="editConfiguration.html"];
+  executeFocusCallback [URL="executeFocusCallback.html"];
+  executeGrabOneCallback [URL="executeGrabOneCallback.html"];
+  executeGrabOneStackCallback [URL="executeGrabOneStackCallback.html"];
+  figureButtonOverCallback [URL="figureButtonOverCallback.html"];
+  genericKeyPressFunction [URL="genericKeyPressFunction.html"];
+  openChannelGUI [URL="openChannelGUI.html"];
+  setAcquisitionParameters [URL="setAcquisitionParameters.html"];
+  toggleKeepAllSlicesInMemory [URL="toggleKeepAllSlicesInMemory.html"];
+  updateClim [URL="updateClim.html"];
+  updateFullFileName [URL="updateFullFileName.html"];
+  updateimageGUI [URL="updateimageGUI.html"];
+}

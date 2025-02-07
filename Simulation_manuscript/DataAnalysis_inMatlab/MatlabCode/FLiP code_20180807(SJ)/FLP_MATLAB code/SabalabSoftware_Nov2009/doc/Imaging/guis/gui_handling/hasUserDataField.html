@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of hasUserDataField</title>
+  <meta name="keywords" content="hasUserDataField">
+  <meta name="description" content="checks if a field exists within the 'UserData' of a particular handle">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="../../index.html">Imaging</a> &gt; <a href="../index.html">guis</a> &gt; <a href="index.html">gui_handling</a> &gt; hasUserDataField.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for Imaging\guis\gui_handling&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>hasUserDataField
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>checks if a field exists within the 'UserData' of a particular handle</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function r=hasUserDataField(h, f) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> checks if a field exists within the 'UserData' of a particular handle</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="checkValidNumber.html" class="code" title="function out=checkValidNumber(handle)">checkValidNumber</a>	function to check if entry in GUI is valid</li><li><a href="doGUICallback.html" class="code" title="function doGUICallback(handle)">doGUICallback</a>	calls the Callback function of a GUI if one has been set by the user</li><li><a href="getGUIValue.html" class="code" title="function out=getGUIValue(handle)">getGUIValue</a>	returns the value in a GUI</li><li><a href="getUserDataField.html" class="code" title="function retVal=getUserDataField(handle, field)">getUserDataField</a>	returns value of field in 'UserData' or [] if that field does not exist</li><li><a href="hasGUIBeenUsed.html" class="code" title="function out=hasGUIBeenUsed(handle)">hasGUIBeenUsed</a>	</li><li><a href="setGUIValue.html" class="code" title="function setGUIValue(handle, val)">setGUIValue</a>	set the value displayed in a GUI to the given value</li><li><a href="updateAllGUIVars.html" class="code" title="function updateAllGUIVars(handle)">updateAllGUIVars</a>	udpates all GUIs in handle</li><li><a href="updateGUIGlobal.html" class="code" title="function updateGUIGlobal(handle)">updateGUIGlobal</a>	update the value of a Global value to match that contained in its GUI</li><li><a href="updateGUILinks.html" class="code" title="function updateGUILinks(handle)">updateGUILinks</a>	</li><li><a href="updateGUIVars.html" class="code" title="function updateGUIVars(handle)">updateGUIVars</a>	updates the value displayed in a GUI to match that of an associated variable</li><li><a href="updateVariable.html" class="code" title="function updateVariable(handle)">updateVariable</a>	automatically updates a global variable when a GUI value has been changed</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function r=hasUserDataField(h, f)</a>
+0002 <span class="comment">% checks if a field exists within the 'UserData' of a particular handle</span>
+0003     <span class="keyword">if</span> ishandle(h)
+0004         ud=get(h, <span class="string">'UserData'</span>);
+0005         length(ud);
+0006         <span class="keyword">if</span> (length(ud)&gt;0)
+0007             r=isfield(ud, f);
+0008         <span class="keyword">else</span>
+0009             r=0;
+0010         <span class="keyword">end</span>
+0011     <span class="keyword">else</span>
+0012         r=0;
+0013     <span class="keyword">end</span>
+0014     
+0015</pre></div>
+<hr><address>Generated on Thu 19-Apr-2012 16:55:20 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

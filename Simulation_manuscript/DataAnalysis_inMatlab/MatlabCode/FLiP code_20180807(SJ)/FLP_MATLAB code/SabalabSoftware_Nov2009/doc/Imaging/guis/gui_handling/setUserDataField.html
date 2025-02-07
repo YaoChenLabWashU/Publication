@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of setUserDataField</title>
+  <meta name="keywords" content="setUserDataField">
+  <meta name="description" content="sets fields in 'UserData' of a handle. Varargin should be field1, value1 [, field2, value2 ...]">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="../../index.html">Imaging</a> &gt; <a href="../index.html">guis</a> &gt; <a href="index.html">gui_handling</a> &gt; setUserDataField.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for Imaging\guis\gui_handling&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>setUserDataField
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>sets fields in 'UserData' of a handle. Varargin should be field1, value1 [, field2, value2 ...]</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function setUserDataField(handle, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> sets fields in 'UserData' of a handle. Varargin should be field1, value1 [, field2, value2 ...]
+ handles all 'UserData' fields other than 'Gui' which really acts on a global and is set
+ through addGuiOfGlobal</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="genericCallback.html" class="code" title="function genericCallback(handle)">genericCallback</a>	</li><li><a href="hasGUIBeenUsed.html" class="code" title="function out=hasGUIBeenUsed(handle)">hasGUIBeenUsed</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="checkValidNumber.html" class="code" title="function out=checkValidNumber(handle)">checkValidNumber</a>	function to check if entry in GUI is valid</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function setUserDataField(handle, varargin)</a>
+0002 <span class="comment">% sets fields in 'UserData' of a handle. Varargin should be field1, value1 [, field2, value2 ...]</span>
+0003 <span class="comment">% handles all 'UserData' fields other than 'Gui' which really acts on a global and is set</span>
+0004 <span class="comment">% through addGuiOfGlobal</span>
+0005 
+0006     <span class="keyword">global</span> gh
+0007     
+0008     <span class="keyword">if</span> (length(varargin)&gt;=2)                <span class="comment">% make sure there are param, value pairs</span>
+0009         style=get(handle, <span class="string">'Style'</span>);            <span class="comment">% get style of handle to adjust behavior</span>
+0010         ud=get(handle, <span class="string">'UserData'</span>);            
+0011         <span class="keyword">if</span> ~isstruct(ud)
+0012             ud=[];
+0013         <span class="keyword">end</span>
+0014         recheckValid=0;                        <span class="comment">% flag that determines  whether gui validity needs to be rechecked.</span>
+0015                                             <span class="comment">% this is used to catch invalid entries that might be caused by</span>
+0016                                             <span class="comment">% changing the 'Max' or 'Min' values of a GUI</span>
+0017         <span class="keyword">for</span> i=1:length(varargin)/2            <span class="comment">%loop through pairs</span>
+0018             ud=setfield(ud, varargin{i*2-1}, varargin{i*2});    <span class="comment">% add param, value pair to 'UserData'</span>
+0019             <span class="keyword">if</span> strcmp(style, <span class="string">'slider'</span>)                             
+0020                 <span class="keyword">if</span> any(strcmp(varargin{i*2-1}, {<span class="string">'Min'</span>; <span class="string">'Max'</span>; <span class="string">'Value'</span>}))
+0021                     <span class="keyword">if</span> <a href="hasGUIBeenUsed.html" class="code" title="function out=hasGUIBeenUsed(handle)">hasGUIBeenUsed</a>(handle) | strcmp(varargin{i*2-1}, <span class="string">'Value'</span>)
+0022                         recheckValid=1;                            <span class="comment">% will need to recheck vaility</span>
+0023                     <span class="keyword">end</span>;
+0024                     set(handle, varargin{i*2-1}, varargin{i*2});    <span class="comment">% for sliders Max, Min, and Value are handle properties</span>
+0025                 <span class="keyword">end</span>
+0026             <span class="keyword">elseif</span> strcmp(style, <span class="string">'edit'</span>) 
+0027                 <span class="keyword">if</span> any(strcmp(varargin{i*2-1}, {<span class="string">'String'</span>; <span class="string">'Value'</span>}))
+0028                     recheckValid=1;
+0029                     val=varargin{i*2};
+0030                     <span class="keyword">if</span> isnumeric(val)
+0031                         val=num2str(val);
+0032                     <span class="keyword">end</span>
+0033                     set(handle, <span class="string">'String'</span>, val);
+0034                 <span class="keyword">elseif</span> any(strcmp(varargin{i*2-1}, {<span class="string">'Min'</span>; <span class="string">'Max'</span>})) &amp; <a href="hasGUIBeenUsed.html" class="code" title="function out=hasGUIBeenUsed(handle)">hasGUIBeenUsed</a>(handle)
+0035                     recheckValid=1;
+0036                 <span class="keyword">end</span>
+0037             <span class="keyword">end</span>
+0038         <span class="keyword">end</span>
+0039         set(handle, <span class="string">'UserData'</span>, ud);
+0040         <span class="keyword">if</span> recheckValid                        <span class="comment">% if vailidity needs to be rechecked</span>
+0041             <a href="genericCallback.html" class="code" title="function genericCallback(handle)">genericCallback</a>(handle);        <span class="comment">% check by calling genericCallback routine on the gui</span>
+0042         <span class="keyword">end</span>
+0043     <span class="keyword">end</span>
+0044     
+0045     
+0046</pre></div>
+<hr><address>Generated on Thu 19-Apr-2012 16:55:20 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

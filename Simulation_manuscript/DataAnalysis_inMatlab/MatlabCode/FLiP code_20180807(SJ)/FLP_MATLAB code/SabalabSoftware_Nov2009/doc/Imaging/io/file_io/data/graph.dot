@@ -1,0 +1,19 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  checkFileBeforeSave -> doesFileExist;
+  savingInfoIsOK -> setSavePath;
+  writeData -> updateHeaderString;
+
+  Copy of writeData [URL="Copy of writeData.html"];
+  arrayToTiff [URL="arrayToTiff.html"];
+  checkFileBeforeSave [URL="checkFileBeforeSave.html"];
+  doesFileExist [URL="doesFileExist.html"];
+  saveHeaderStructureAs [URL="saveHeaderStructureAs.html"];
+  savingInfoIsOK [URL="savingInfoIsOK.html"];
+  setSavePath [URL="setSavePath.html"];
+  updateHeaderString [URL="updateHeaderString.html"];
+  valueFromHeaderString [URL="valueFromHeaderString.html"];
+  writeData [URL="writeData.html"];
+  writeMaxData [URL="writeMaxData.html"];
+  zeroPadNum2Str [URL="zeroPadNum2Str.html"];
+}

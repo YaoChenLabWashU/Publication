@@ -1,0 +1,229 @@
+structure state
+   user=''
+   structure db
+   endstructure
+   figurePath=''
+   structure software
+   endstructure
+   structure init
+   endstructure
+   structure daq
+   endstructure
+   structure acq
+   endstructure
+   structure internal
+      saveHeaderAsTxt=1
+   endstructure
+   structure pulses
+      pulseSetName='JRCaMP_pulse'
+      pulseSetPath='C:\SJ\Settings\'
+      autoSavePatterns=1
+   endstructure
+   structure files
+      autoSave=1
+      automaticOverwrite=0
+   endstructure
+   structure timer
+      analysisFunctionPath=''
+   endstructure
+   structure cycle
+      cycleName=''
+      cyclePath=''
+   endstructure
+   structure windowPositions
+      chooser_position=[103.8      49.76923            56      11.84615]
+      chooser_visible='off'
+      timerMainControls_position=[3           75           51      13.8462]
+      timerMainControls_visible='on'
+      pulseMaker_position=[234.8             6          59.6      11.69231]
+      pulseMaker_visible='on'
+      advancedCycleGui_position=[60      41.9231           59      32.0769]
+      advancedCycleGui_visible='on'
+      notebook_position=[110.2      74.30769          81.6      12.84615]
+      notebook_visible='on'
+      notebookLine_position=[233.2      79.30769          79.8      6.076923]
+      notebookLine_visible='off'
+      traceAnalyzer_position=[121.6      28.53846          62.2      40.15385]
+      traceAnalyzer_visible='on'
+      physControls_position=[56      76.0769         64.8      12.4615]
+      physControls_visible='on'
+      physSettings_position=[239.4      68.30769          66.2      21.30769]
+      physSettings_visible='on'
+      scope_position=[238.2      54.76923          82.2      10.69231]
+      scope_visible='on'
+      scopeWindow_position=[520  678  560  420]
+      lmSettings_position=[235.6      22.30769            26      14.61538]
+      lmSettings_visible='on'
+   endstructure
+   structure pcell
+      pcellScanning1=40
+      pcellFlyBack1=0
+      pcellDefaultLevel1=-1
+      pcellDualLevel1=0
+      pcellScanning2=0
+      pcellFlyBack2=0
+      pcellDefaultLevel2=-1
+      pcellDualLevel2=0
+      boxSize=10
+      pcellPowerCal1=
+      pcellPowerCal2=
+      pcellTablePath=''
+      pcellTableName1=''
+      pcellTableName2=''
+   endstructure
+   structure phys
+      structure daq
+      endstructure
+      structure internal
+         stripes=10
+      endstructure
+      structure settings
+         channelType0=1
+         channelType1=1
+         outputRate=10000
+         inputRate=1000
+         keepInMemory=0
+         autosavePassiveParam=0
+         multiClampPAPerVIn=2000
+         multiClampPAPerVOut=400
+         multiClampMVPerVIn=100
+         multiClampMVPerVOut=20
+         readGain0=1
+         readMode0=1
+         readGain1=1
+         readMode1=1
+         ADPrefix0='AD0'
+         acq0=1
+         disp0=1
+         avg0=1
+         ADPrefix1='AD1'
+         acq1=1
+         disp1=1
+         avg1=1
+         ADPrefix2='AD2'
+         acq2=1
+         disp2=1
+         avg2=1
+         ADPrefix3='AD3'
+         acq3=1
+         disp3=1
+         avg3=1
+         ADPrefix4='AD4'
+         acq4=0
+         disp4=0
+         avg4=0
+         ADPrefix5='AD5'
+         acq5=0
+         disp5=0
+         avg5=0
+         ADPrefix6='AD6'
+         acq6=0
+         disp6=0
+         avg6=0
+         ADPrefix7='AD7'
+         acq7=0
+         disp7=0
+         avg7=0
+      endstructure
+      structure cellParams
+      endstructure
+      structure scope
+         pulseWidthVC=10
+         pulseAmpVC=-5
+         pulseWidthCC=100
+         pulseAmpCC=-100
+         frequency=5
+      endstructure
+   endstructure
+   structure motor
+   endstructure
+   structure piezo
+   endstructure
+   structure laser
+   endstructure
+   structure spc
+      structure acq
+         structure timer
+         endstructure
+      endstructure
+      structure init
+      endstructure
+      structure internal
+      endstructure
+      structure files
+      endstructure
+   endstructure
+   structure notebook
+   endstructure
+   structure lm
+      lineMonitorActive=0
+      pollDuringWait=1
+      pollEachAcq=0
+      paramName1=''
+      paramName2=''
+      paramName3=''
+      paramName4=''
+      paramName5=''
+      paramName6=''
+      paramValue1=NaN
+      paramValue2=NaN
+      paramValue3=NaN
+      paramValue4=NaN
+      paramValue5=NaN
+      paramValue6=NaN
+      active1=0
+      active2=0
+      active3=0
+      active4=0
+      active5=0
+      active6=0
+      dev1=1
+      dev2=1
+      dev3=1
+      dev4=1
+      dev5=1
+      dev6=1
+      ad1=0
+      ad2=1
+      ad3=2
+      ad4=3
+      ad5=4
+      ad6=5
+      linear1=0
+      linear2=0
+      linear3=0
+      linear4=0
+      linear5=0
+      linear6=0
+      linearOffset1=0
+      linearOffset2=0
+      linearOffset3=0
+      linearOffset4=0
+      linearOffset5=0
+      linearOffset6=0
+      linearSlope1=1
+      linearSlope2=1
+      linearSlope3=1
+      linearSlope4=1
+      linearSlope5=1
+      linearSlope6=1
+      transformFunction1=''
+      transformFunction2=''
+      transformFunction3=''
+      transformFunction4=''
+      transformFunction5=''
+      transformFunction6=''
+      sigDigits1=3
+      sigDigits2=3
+      sigDigits3=3
+      sigDigits4=3
+      sigDigits5=3
+      sigDigits6=3
+   endstructure
+   structure analysis
+      setupPath=''
+      setupName=''
+   endstructure
+   structure FLP
+   endstructure
+endstructure

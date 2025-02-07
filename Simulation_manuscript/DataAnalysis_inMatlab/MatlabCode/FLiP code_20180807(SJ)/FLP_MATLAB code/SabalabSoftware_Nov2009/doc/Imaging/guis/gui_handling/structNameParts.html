@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of structNameParts</title>
+  <meta name="keywords" content="structNameParts">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="../../index.html">Imaging</a> &gt; <a href="../index.html">guis</a> &gt; <a href="index.html">gui_handling</a> &gt; structNameParts.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for Imaging\guis\gui_handling&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>structNameParts
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [outTopName, outStructName, outFieldName] = structNameParts(s) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="addGUIOfGlobal.html" class="code" title="function addGUIOfGlobal(globalName, guiName)">addGUIOfGlobal</a>	add a GUI to the list of GUIs associated with a global variable</li><li><a href="addOrRemoveConfigGlobal.html" class="code" title="function setGlobalConfigStatus(globalName, flag)">addOrRemoveConfigGlobal</a>	</li><li><a href="existGlobal.html" class="code" title="function out=existGlobal(globalName)">existGlobal</a>	</li><li><a href="getGlobalConfigStatus.html" class="code" title="function out=getGlobalConfigStatus(globalName)">getGlobalConfigStatus</a>	</li><li><a href="getGuiOfGlobal.html" class="code" title="function out=getGuiOfGlobal(globalName)">getGuiOfGlobal</a>	</li><li><a href="hideGUI.html" class="code" title="function hideGUI(GUI)">hideGUI</a>	</li><li><a href="seeGUI.html" class="code" title="function seeGUI(GUI)">seeGUI</a>	makes a gui visible.  expects string with name of gui</li><li><a href="setGlobalConfigStatus.html" class="code" title="function setGlobalConfigStatus(globalName, configStatus)">setGlobalConfigStatus</a>	</li><li><a href="setUserDataByGUIName.html" class="code" title="function setUserDataByGUIName(guiLoc, param, value)">setUserDataByGUIName</a>	</li><li><a href="updateGUIByName.html" class="code" title="function updateGUIByName(guiLoc)">updateGUIByName</a>	given the name of a GUI, updates its contents to reflect the current state of a global variable</li><li><a href="updateGUIGlobal.html" class="code" title="function updateGUIGlobal(handle)">updateGUIGlobal</a>	update the value of a Global value to match that contained in its GUI</li><li><a href="updateGUILinks.html" class="code" title="function updateGUILinks(handle)">updateGUILinks</a>	</li><li><a href="updateGuiByStruct.html" class="code" title="function updateGuiByStruct(startingName);">updateGuiByStruct</a>	</li><li><a href="../../../Imaging/io/file_io/initialization/createConfigFileFast.html" class="code" title="function createConfigFile(bitFlags, fid, outputFlag)">createConfigFileFast</a>	</li><li><a href="../../../Imaging/io/file_io/initialization/initGUIs.html" class="code" title="function [out,fname,pname,ext]=initGUIs(fileName, callCallbacks, file)">initGUIs</a>	opens and interprets and initialization file</li><li><a href="../../../Imaging/io/file_io/initialization/initGUIs_OLD.html" class="code" title="function [out,fname,pname,ext]=initGUIs(fileName, callCallbacks)">initGUIs_OLD</a>	opens and interprets and initialization file</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [outTopName, outStructName, outFieldName] = structNameParts(s)</a>
+0002     s=deblank(s);
+0003     periods=findstr(s, <span class="string">'.'</span>);
+0004     <span class="keyword">if</span> length(periods)&gt;0
+0005         outTopName=s(1:periods(1)-1);
+0006         outStructName=s(1:periods(length(periods))-1);
+0007         outFieldName=s(periods(length(periods))+1:length(s));
+0008     <span class="keyword">else</span>
+0009         outTopName=s;
+0010         outStructName=[];
+0011         outFieldName=[];
+0012     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 19-Apr-2012 16:55:20 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,15 @@
+function timerExecuteAnalysisFunctions
+	global gh
+	
+	if ~ishandle(gh.timerMainControls.Analysis)
+		return
+	end
+	
+	
+	children=get(gh.timerMainControls.Analysis, 'Children');
+	checked=children(strcmp(get(children, 'Checked'), 'on'));
+
+	for counter=1:length(checked)
+		disp(['Executing user analysis ' get(checked(length(checked)-counter+1), 'Label')]);
+		eval(get(checked(length(checked)-counter+1), 'Label'));
+	end

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of executeGrabOneCallback</title>
+  <meta name="keywords" content="executeGrabOneCallback">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="../../index.html">Imaging</a> &gt; <a href="../index.html">guis</a> &gt; <a href="index.html">gui_callbacks</a> &gt; executeGrabOneCallback.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for Imaging\guis\gui_callbacks&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>executeGrabOneCallback
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function executeGrabOneCallback </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../Imaging/guis/gui_handling/setStatusString.html" class="code" title="function setStatusString(st)">setStatusString</a>	This function sets the status field in mainControls.</li><li><a href="../../../Imaging/io/file_io/data/savingInfoIsOK.html" class="code" title="function out=savingInfoIsOK(physOnly)">savingInfoIsOK</a>	updated by tp 10/25/01</li><li><a href="../../../Timer/timerCallPackageFunctions.html" class="code" title="function status=timerCallPackageFunctions(type, package)">timerCallPackageFunctions</a>	</li><li><a href="../../../Timer/timerSetActiveStatus.html" class="code" title="function timerSetActiveStatus(packageList, status)">timerSetActiveStatus</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../Imaging/guis/gui_building/siGUI_ImagingControls.html" class="code" title="function varargout = siGUI_ImagingControls(varargin)">siGUI_ImagingControls</a>	siGUI_ImagingControls Application M-file for siGUI_ImagingControls.fig</li><li><a href="executeGrabOneStackCallback.html" class="code" title="function executeGrabOneStackCallback(h)">executeGrabOneStackCallback</a>	executeGrabOneCallback(h).m******</li><li><a href="../../../Imaging/io/scanFieldControl/SpineSelect.html" class="code" title="function SpineSelect(num)">SpineSelect</a>	</li><li><a href="../../../Imaging/io/stackAndBlast.html" class="code" title="function stackAndBlast">stackAndBlast</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function executeGrabOneCallback</a>
+0002     <span class="keyword">global</span> state gh
+0003 
+0004     state.internal.looping=0;
+0005 
+0006     val=get(gh.siGUI_ImagingControls.grabOneButton, <span class="string">'String'</span>);
+0007 
+0008     <span class="keyword">persistent</span> multipleAbortAttempts
+0009     
+0010     <span class="keyword">if</span> (exist(<span class="string">'multipleAbortAttempts'</span>, <span class="string">'var'</span>)~=1)
+0011         multipleAbortAttempts=0;
+0012     <span class="keyword">end</span>
+0013     
+0014     <span class="keyword">if</span> strcmp(val, <span class="string">'GRAB'</span>)
+0015         <span class="keyword">if</span> strcmp(get(gh.basicConfigurationGUI.figure1, <span class="string">'Visible'</span>), <span class="string">'on'</span>) == 1
+0016             beep;
+0017             <a href="../../../Imaging/guis/gui_handling/setStatusString.html" class="code" title="function setStatusString(st)">setStatusString</a>(<span class="string">'Close Configuration GUI'</span>);
+0018             <span class="keyword">return</span>
+0019         <span class="keyword">end</span>
+0020         
+0021         <span class="keyword">if</span> ~<a href="../../../Imaging/io/file_io/data/savingInfoIsOK.html" class="code" title="function out=savingInfoIsOK(physOnly)">savingInfoIsOK</a>
+0022             <span class="keyword">return</span>
+0023         <span class="keyword">end</span>    
+0024         multipleAbortAttempts=0;
+0025         
+0026         <a href="../../../Timer/timerSetActiveStatus.html" class="code" title="function timerSetActiveStatus(packageList, status)">timerSetActiveStatus</a>(<span class="string">'Imaging'</span>, 1);    
+0027 
+0028         <a href="../../../Timer/timerCallPackageFunctions.html" class="code" title="function status=timerCallPackageFunctions(type, package)">timerCallPackageFunctions</a>(<span class="string">'FirstSetup'</span>, <span class="string">'Imaging'</span>);
+0029         <a href="../../../Timer/timerCallPackageFunctions.html" class="code" title="function status=timerCallPackageFunctions(type, package)">timerCallPackageFunctions</a>(<span class="string">'Setup'</span>, <span class="string">'Imaging'</span>);
+0030         <a href="../../../Timer/timerCallPackageFunctions.html" class="code" title="function status=timerCallPackageFunctions(type, package)">timerCallPackageFunctions</a>(<span class="string">'Start'</span>, <span class="string">'Imaging'</span>);
+0031         
+0032         state.cycle.loopingStatus=0;
+0033 
+0034         <span class="keyword">global</span> grabInput
+0035         start(grabInput);
+0036         trigger(grabInput);
+0037         
+0038     <span class="keyword">elseif</span> strcmp(val, <span class="string">'ABORT'</span>)
+0039         <a href="../../../Timer/timerCallPackageFunctions.html" class="code" title="function status=timerCallPackageFunctions(type, package)">timerCallPackageFunctions</a>(<span class="string">'Abort'</span>, <span class="string">'Imaging'</span>);
+0040         multipleAbortAttempts=multipleAbortAttempts+1;
+0041         <span class="keyword">if</span> multipleAbortAttempts&gt;1
+0042             multipleAbortAttempts=multipleAbortAttempts+1;
+0043             disp(<span class="string">'Multiple abort attempts.  Will force abort.'</span>);
+0044             <a href="../../../Timer/timerCallPackageFunctions.html" class="code" title="function status=timerCallPackageFunctions(type, package)">timerCallPackageFunctions</a>(<span class="string">'ForcedAbort'</span>, <span class="string">'Imaging'</span>);
+0045         <span class="keyword">end</span>                
+0046     <span class="keyword">else</span>
+0047         disp(<span class="string">'executeGrabOneCallback: Grab One button is in unknown state'</span>);     <span class="comment">% BSMOD - error checking</span>
+0048     <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 19-Apr-2012 16:55:20 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

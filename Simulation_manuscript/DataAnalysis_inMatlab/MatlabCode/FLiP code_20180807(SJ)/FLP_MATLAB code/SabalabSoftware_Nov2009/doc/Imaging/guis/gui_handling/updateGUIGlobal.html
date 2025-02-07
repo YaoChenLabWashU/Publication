@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of updateGUIGlobal</title>
+  <meta name="keywords" content="updateGUIGlobal">
+  <meta name="description" content="update the value of a Global value to match that contained in its GUI">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="../../index.html">Imaging</a> &gt; <a href="../index.html">guis</a> &gt; <a href="index.html">gui_handling</a> &gt; updateGUIGlobal.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for Imaging\guis\gui_handling&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>updateGUIGlobal
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>update the value of a Global value to match that contained in its GUI</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function updateGUIGlobal(handle) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> update the value of a Global value to match that contained in its GUI</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="getGUIValue.html" class="code" title="function out=getGUIValue(handle)">getGUIValue</a>	returns the value in a GUI</li><li><a href="getUserDataField.html" class="code" title="function retVal=getUserDataField(handle, field)">getUserDataField</a>	returns value of field in 'UserData' or [] if that field does not exist</li><li><a href="hasUserDataField.html" class="code" title="function r=hasUserDataField(h, f)">hasUserDataField</a>	checks if a field exists within the 'UserData' of a particular handle</li><li><a href="structNameParts.html" class="code" title="function [outTopName, outStructName, outFieldName] = structNameParts(s)">structNameParts</a>	</li><li><a href="updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>	given the name of a global variable, find and update the GUI that contains it</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="genericCallback.html" class="code" title="function genericCallback(handle)">genericCallback</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function updateGUIGlobal(handle)</a>
+0002 <span class="comment">% update the value of a Global value to match that contained in its GUI</span>
+0003     <span class="keyword">if</span> <a href="hasUserDataField.html" class="code" title="function r=hasUserDataField(h, f)">hasUserDataField</a>(handle, <span class="string">'Global'</span>)
+0004         gName=<a href="getUserDataField.html" class="code" title="function retVal=getUserDataField(handle, field)">getUserDataField</a>(handle, <span class="string">'Global'</span>);
+0005         
+0006         [topName, structName, fieldName]=<a href="structNameParts.html" class="code" title="function [outTopName, outStructName, outFieldName] = structNameParts(s)">structNameParts</a>(gName);
+0007         val=<a href="getGUIValue.html" class="code" title="function out=getGUIValue(handle)">getGUIValue</a>(handle);
+0008         <span class="keyword">if</span> isnumeric(val)
+0009             val=num2str(val);
+0010         <span class="keyword">else</span>
+0011             val=[<span class="string">''''</span> val <span class="string">''''</span>];
+0012         <span class="keyword">end</span>
+0013         eval([<span class="string">'global '</span> topName]);
+0014         <span class="keyword">if</span> exist(topName, <span class="string">'var'</span>)
+0015             <span class="keyword">if</span> length(structName)&gt;0
+0016                 eval([structName <span class="string">'=setfield('</span> structName <span class="string">','''</span> fieldName <span class="string">''','</span> val <span class="string">');'</span>]);    
+0017             <span class="keyword">else</span>
+0018                 eval([topName <span class="string">'='</span> val <span class="string">';'</span>]);
+0019             <span class="keyword">end</span>
+0020             <a href="updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(gName);    
+0021         <span class="keyword">else</span>
+0022             Disp([<span class="string">'Error: global '</span> topName <span class="string">' not found'</span>]);
+0023         <span class="keyword">end</span>
+0024     <span class="keyword">end</span>
+0025</pre></div>
+<hr><address>Generated on Thu 19-Apr-2012 16:55:20 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
