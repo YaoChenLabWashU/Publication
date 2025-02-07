@@ -1,0 +1,305 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of setAcquisitionParameters</title>
+  <meta name="keywords" content="setAcquisitionParameters">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="../../index.html">Imaging</a> &gt; <a href="../index.html">guis</a> &gt; <a href="index.html">gui_callbacks</a> &gt; setAcquisitionParameters.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for Imaging\guis\gui_callbacks&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>setAcquisitionParameters
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function setAcquisitionParameters </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../Imaging/guis/gui_handling/setStatusString.html" class="code" title="function setStatusString(st)">setStatusString</a>	This function sets the status field in mainControls.</li><li><a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>	given the name of a global variable, find and update the GUI that contains it</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../Imaging/guis/gui_building/basicConfigurationGUI.html" class="code" title="function varargout = basicConfigurationGUI(varargin)">basicConfigurationGUI</a>	BASICCONFIGURATIONGUI_OLD Application M-file for configurationGUI.fig</li><li><a href="../../../Imaging/guis/gui_building/fieldAdjustGUI.html" class="code" title="function varargout = fieldAdjustGUI(varargin)">fieldAdjustGUI</a>	FIELDADJUSTGUI M-file for fieldAdjustGUI.fig</li><li><a href="closeConfigurationGUI.html" class="code" title="function closeConfigurationGUI">closeConfigurationGUI</a>	</li><li><a href="../../../Imaging/io/file_io/configurations/loadConfig.html" class="code" title="function loadConfig()">loadConfig</a>	</li><li><a href="../../../Imaging/io/initImaging.html" class="code" title="function initImaging(userFile, analysisMode)">initImaging</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function setAcquisitionParameters</a>
+0002 <span class="keyword">global</span> state 
+0003 
+0004 <span class="comment">% setAcquisitionParameter.m****</span>
+0005 <span class="comment">% Function that sets the samplesAcquiredPerLine and inputRate when the user sets the</span>
+0006 <span class="comment">% Fillfractiona dn the msPerLine.</span>
+0007 
+0008 <span class="comment">% state.acq.inputRate = 1250000;</span>
+0009 <span class="comment">% updateGUIByGlobal('state.acq.inputRate');</span>
+0010         
+0011 <span class="keyword">switch</span> state.acq.msPerLineGUI <span class="comment">% 1 = 1 ms, 2 = 2ms, 3 = 4 ms, 4 = 8 ms</span>
+0012 <span class="keyword">case</span> 1
+0013     state.acq.samplesAcquiredPerLine = 1024;
+0014         
+0015     <span class="keyword">switch</span> state.acq.fillFractionGUI
+0016     <span class="keyword">case</span> 1 <span class="comment">% fillFraction = 0.71234782608696</span>
+0017         state.acq.fillFraction =0.71234782608696;
+0018         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0019         state.acq.msPerLine = 1.1500;
+0020         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0021 
+0022     <span class="keyword">case</span> 2 <span class="comment">% fillFraction =  0.74472727272727</span>
+0023         state.acq.fillFraction = 0.7447272727272720000;
+0024         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0025         state.acq.msPerLine = 1.10;
+0026         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0027 
+0028     <span class="keyword">case</span> 3 <span class="comment">% fillFraction = 0.78019047619048</span>
+0029         state.acq.fillFraction = 0.7801904761904800000;
+0030         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0031         state.acq.msPerLine = 1.0500;
+0032         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0033 
+0034     <span class="keyword">case</span> 4 <span class="comment">% fillFraction = 0.81920000000000</span>
+0035         state.acq.fillFraction = 0.8192000000000000000;
+0036         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0037         state.acq.msPerLine = 1.0;
+0038         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0039 
+0040     <span class="keyword">case</span> 5 <span class="comment">% fillFraction = 0.81920000000000</span>
+0041         state.acq.fillFraction = 0.8192000000000000000;
+0042         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0043         state.acq.fillFractionGUI = 4;
+0044         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFractionGUI'</span>);
+0045         state.acq.msPerLine = 1.0;
+0046         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0047 
+0048     <span class="keyword">case</span> 6 <span class="comment">% fillFraction = 0.81920000000000</span>
+0049         state.acq.fillFraction = 0.8192000000000000000;
+0050         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0051         state.acq.fillFractionGUI = 4;
+0052         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFractionGUI'</span>);
+0053         state.acq.msPerLine = 1.0;
+0054         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0055 
+0056     <span class="keyword">case</span> 7 <span class="comment">% fillFraction = 0.81920000000000</span>
+0057         state.acq.fillFraction = 0.8192000000000000000;
+0058         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0059         state.acq.fillFractionGUI = 4;
+0060         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFractionGUI'</span>);
+0061         state.acq.msPerLine = 1.0;
+0062         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0063 
+0064         
+0065     <span class="keyword">otherwise</span> 
+0066     <span class="keyword">end</span>
+0067     
+0068 <span class="keyword">case</span> 2
+0069     state.acq.samplesAcquiredPerLine = 2048;
+0070     
+0071     <span class="keyword">switch</span> state.acq.fillFractionGUI
+0072     <span class="keyword">case</span> 1 <span class="comment">% fillFraction = 0.71234782608696</span>
+0073         state.acq.fillFraction = 0.71234782608696;
+0074         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0075         state.acq.msPerLine = 2.30;
+0076         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0077 
+0078     <span class="keyword">case</span> 2 <span class="comment">% fillFraction =  0.74472727272727</span>
+0079         state.acq.fillFraction = 0.74472727272727;
+0080         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0081         state.acq.msPerLine = 2.20;
+0082         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0083 
+0084     <span class="keyword">case</span> 3 <span class="comment">% fillFraction = 0.78019047619048</span>
+0085         state.acq.fillFraction = 0.78019047619048;
+0086         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0087         state.acq.msPerLine = 2.10;
+0088         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0089 
+0090     <span class="keyword">case</span> 4 <span class="comment">% fillFraction = 0.81920000000000</span>
+0091         state.acq.fillFraction = 0.81920000000000;
+0092         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0093         state.acq.msPerLine = 2.0;
+0094         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0095 
+0096     <span class="keyword">case</span> 5 <span class="comment">% fillFraction = 0.86231578947368</span>
+0097         state.acq.fillFraction = 0.86231578947368;
+0098         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0099         state.acq.msPerLine = 1.90;
+0100         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0101 
+0102     <span class="keyword">case</span> 6 <span class="comment">% fillFraction = 0.91022222222222</span>
+0103         state.acq.fillFraction = 0.91022222222222;
+0104         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0105         state.acq.msPerLine = 1.80;
+0106         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0107 
+0108     <span class="keyword">case</span> 7  <span class="comment">% fillFraction = 0.91022222222222</span>
+0109         state.acq.fillFraction = 0.91022222222222;
+0110         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0111         state.acq.fillFractionGUI = 6;
+0112         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFractionGUI'</span>);
+0113         state.acq.msPerLine = 1.80;
+0114         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0115 
+0116         
+0117     <span class="keyword">otherwise</span> 
+0118     <span class="keyword">end</span>
+0119     
+0120 <span class="keyword">case</span> 3
+0121     <a href="../../../Imaging/guis/gui_handling/setStatusString.html" class="code" title="function setStatusString(st)">setStatusString</a>(<span class="string">''</span>);
+0122     state.acq.samplesAcquiredPerLine = 4096;
+0123         
+0124     <span class="keyword">switch</span> state.acq.fillFractionGUI
+0125     <span class="keyword">case</span> 1 <span class="comment">% fillFraction = 0.71234782608696</span>
+0126         state.acq.fillFraction = 0.71234782608696;
+0127         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0128         state.acq.msPerLine = 4.60;
+0129         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0130     <span class="keyword">case</span> 2 <span class="comment">% fillFraction =  0.74472727272727</span>
+0131         state.acq.fillFraction = 0.74472727272727;
+0132         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0133         state.acq.msPerLine = 4.40;
+0134         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0135     <span class="keyword">case</span> 3 <span class="comment">% fillFraction = 0.78019047619048</span>
+0136         state.acq.fillFraction = 0.78019047619048;
+0137         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0138         state.acq.msPerLine = 4.20;
+0139         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0140     <span class="keyword">case</span> 4 <span class="comment">% fillFraction = 0.81920000000000</span>
+0141         state.acq.fillFraction = 0.81920000000000;
+0142         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0143         state.acq.msPerLine = 4.00;
+0144         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0145     <span class="keyword">case</span> 5 <span class="comment">% fillFraction = 0.86231578947368</span>
+0146         state.acq.fillFraction = 0.86231578947368;
+0147         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0148         state.acq.msPerLine = 3.80;
+0149         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0150     <span class="keyword">case</span> 6 <span class="comment">% fillFraction = 0.91022222222222</span>
+0151         state.acq.fillFraction = 0.91022222222222;
+0152         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0153         state.acq.msPerLine = 3.60;
+0154         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0155     <span class="keyword">case</span> 7  <span class="comment">% fillFraction = 0.96376470588235</span>
+0156         state.acq.fillFraction = 0.96376470588235;
+0157         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0158         state.acq.msPerLine = 3.400;
+0159         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0160         
+0161     <span class="keyword">otherwise</span> 
+0162     <span class="keyword">end</span>
+0163     
+0164 <span class="keyword">case</span> 4
+0165     <a href="../../../Imaging/guis/gui_handling/setStatusString.html" class="code" title="function setStatusString(st)">setStatusString</a>(<span class="string">''</span>);
+0166     state.acq.samplesAcquiredPerLine = 8192;
+0167     
+0168     <span class="keyword">switch</span> state.acq.fillFractionGUI
+0169     <span class="keyword">case</span> 1 <span class="comment">% fillFraction = 0.71234782608696</span>
+0170         state.acq.fillFraction = 0.71234782608696;
+0171         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0172         state.acq.msPerLine = 9.20;
+0173         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0174     <span class="keyword">case</span> 2 <span class="comment">% fillFraction =  0.74472727272727</span>
+0175         state.acq.fillFraction = 0.74472727272727;
+0176         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0177         state.acq.msPerLine = 8.80;
+0178         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0179     <span class="keyword">case</span> 3 <span class="comment">% fillFraction = 0.78019047619048</span>
+0180         state.acq.fillFraction = 0.78019047619048;
+0181         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0182         state.acq.msPerLine = 8.40;
+0183         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0184     <span class="keyword">case</span> 4 <span class="comment">% fillFraction = 0.81920000000000</span>
+0185         state.acq.fillFraction = 0.81920000000000;
+0186         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0187         state.acq.msPerLine = 8.0;
+0188         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0189     <span class="keyword">case</span> 5 <span class="comment">% fillFraction = 0.86231578947368</span>
+0190         state.acq.fillFraction = 0.86231578947368;
+0191         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0192         state.acq.msPerLine = 7.60;
+0193         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0194     <span class="keyword">case</span> 6 <span class="comment">% fillFraction = 0.91022222222222</span>
+0195         state.acq.fillFraction = 0.91022222222222;
+0196         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0197         state.acq.msPerLine = 7.20;
+0198         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0199     <span class="keyword">case</span> 7  <span class="comment">% fillFraction = 0.96376470588235</span>
+0200         state.acq.fillFraction = 0.96376470588235;
+0201         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.fillFraction'</span>);
+0202         state.acq.msPerLine = 6.800;
+0203         <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.msPerLine'</span>);
+0204         
+0205     <span class="keyword">otherwise</span> 
+0206     <span class="keyword">end</span>
+0207     
+0208     
+0209 <span class="keyword">otherwise</span>
+0210 <span class="keyword">end</span>
+0211 
+0212 state.internal.samplesPerLine=state.acq.msPerLine*state.acq.actualInputRate/1000;
+0213 <span class="keyword">if</span> state.acq.dualLaserMode==1 <span class="comment">% if the lasers are on simulataneously then nothing special</span>
+0214     sampleFactor=1;
+0215 <span class="keyword">elseif</span> state.acq.dualLaserMode==2
+0216     sampleFactor=2;    <span class="comment">% if they are alternating, then double the number of acqs before trigger the trigger function</span>
+0217 <span class="keyword">end</span>
+0218 state.internal.samplesPerStripe = sampleFactor*state.internal.samplesPerLine*state.acq.linesPerFrame/state.internal.numberOfStripes;          
+0219 
+0220 state.acq.samplesAcquiredPerLine=state.acq.samplesAcquiredPerLine*state.acq.inputRate/1250000;
+0221 <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.samplesAcquiredPerLine'</span>);
+0222 state.internal.samplesPerFrame=state.internal.samplesPerLine*state.acq.linesPerFrame;
+0223 
+0224 <span class="keyword">if</span> state.internal.trimImageEdges
+0225     state.acq.binFactor=state.acq.samplesAcquiredPerLine/state.acq.pixelsPerLine;
+0226     state.acq.pixelTime=state.acq.msPerLine*state.acq.fillFraction/state.acq.pixelsPerLine;
+0227     <span class="keyword">if</span> state.acq.bidi
+0228         state.internal.startDataColumnInLine = <span class="keyword">...</span>
+0229             1+round(<span class="keyword">...</span>
+0230             state.internal.samplesPerLine*<span class="keyword">...</span>
+0231             ((1-state.acq.fillFraction)/2+<span class="keyword">...</span><span class="comment">            </span>
+0232             (state.acq.lineDelay/2+state.acq.mirrorLag)/state.acq.msPerLine));
+0233         state.internal.endDataColumnInLine = state.internal.startDataColumnInLine<span class="keyword">...</span>
+0234             + state.acq.pixelsPerLine*state.acq.binFactor-1;    
+0235     <span class="keyword">else</span>
+0236         state.internal.startDataColumnInLine = <span class="keyword">...</span>
+0237             1+round((state.acq.lineDelay+state.acq.mirrorLag)/state.acq.msPerLine*state.internal.samplesPerLine);
+0238         state.internal.endDataColumnInLine = state.internal.startDataColumnInLine <span class="keyword">...</span><span class="comment">.</span>
+0239             + state.acq.pixelsPerLine*state.acq.binFactor-1;    
+0240     <span class="keyword">end</span>
+0241 <span class="keyword">else</span>
+0242     state.acq.binFactor=state.internal.samplesPerLine/state.acq.pixelsPerLine;
+0243     state.acq.pixelTime=state.acq.msPerLine/state.acq.pixelsPerLine;
+0244 
+0245     state.internal.startDataColumnInLine = 1;
+0246     state.internal.endDataColumnInLine = state.internal.samplesPerLine;    
+0247 <span class="keyword">end</span>
+0248 <span class="comment">%     [round((state.acq.lineDelay+state.acq.mirrorLag)/state.acq.msPerLine*state.internal.samplesPerLine)</span>
+0249 <span class="comment">%         state.internal.startDataColumnInLine + state.acq.pixelsPerLine*state.acq.binFactor-1]</span>
+0250 
+0251 <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.internal.startDataColumnInLine'</span>);
+0252 <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.internal.endDataColumnInLine'</span>);
+0253 <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.binFactor'</span>);
+0254 <a href="../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(<span class="string">'state.acq.pixelTime'</span>);
+0255 
+0256 
+0257 
+0258</pre></div>
+<hr><address>Generated on Thu 19-Apr-2012 16:55:20 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

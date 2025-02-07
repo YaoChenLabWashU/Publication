@@ -1,0 +1,9 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  openini -> initGUIs;
+
+  createConfigFileFast [URL="createConfigFileFast.html"];
+  initGUIs [URL="initGUIs.html"];
+  initGUIs_OLD [URL="initGUIs_OLD.html"];
+  openini [URL="openini.html"];
+}

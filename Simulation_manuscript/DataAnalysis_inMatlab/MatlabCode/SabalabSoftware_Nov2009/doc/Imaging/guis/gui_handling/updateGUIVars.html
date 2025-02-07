@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of updateGUIVars</title>
+  <meta name="keywords" content="updateGUIVars">
+  <meta name="description" content="updates the value displayed in a GUI to match that of an associated variable">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="../../index.html">Imaging</a> &gt; <a href="../index.html">guis</a> &gt; <a href="index.html">gui_handling</a> &gt; updateGUIVars.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for Imaging\guis\gui_handling&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>updateGUIVars
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>updates the value displayed in a GUI to match that of an associated variable</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function updateGUIVars(handle) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> updates the value displayed in a GUI to match that of an associated variable</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="getGlobalValue.html" class="code" title="function out=getGlobalValue(glo)">getGlobalValue</a>	</li><li><a href="getUserDataField.html" class="code" title="function retVal=getUserDataField(handle, field)">getUserDataField</a>	returns value of field in 'UserData' or [] if that field does not exist</li><li><a href="hasUserDataField.html" class="code" title="function r=hasUserDataField(h, f)">hasUserDataField</a>	checks if a field exists within the 'UserData' of a particular handle</li><li><a href="setGUIValue.html" class="code" title="function setGUIValue(handle, val)">setGUIValue</a>	set the value displayed in a GUI to the given value</li><li><a href="../../../Imaging/io/file_io/data/updateHeaderString.html" class="code" title="function updateHeaderString(globalName)">updateHeaderString</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="updateAllGUIVars.html" class="code" title="function updateAllGUIVars(handle)">updateAllGUIVars</a>	udpates all GUIs in handle</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function updateGUIVars(handle)</a>
+0002 <span class="comment">% updates the value displayed in a GUI to match that of an associated variable</span>
+0003     <span class="keyword">if</span> ~<a href="hasUserDataField.html" class="code" title="function r=hasUserDataField(h, f)">hasUserDataField</a>(handle, <span class="string">'Global'</span>)
+0004         <span class="keyword">return</span>
+0005     <span class="keyword">end</span>
+0006     glo=<a href="getUserDataField.html" class="code" title="function retVal=getUserDataField(handle, field)">getUserDataField</a>(handle, <span class="string">'Global'</span>);
+0007     <a href="setGUIValue.html" class="code" title="function setGUIValue(handle, val)">setGUIValue</a>(handle, <a href="getGlobalValue.html" class="code" title="function out=getGlobalValue(glo)">getGlobalValue</a>(glo));
+0008     <a href="../../../Imaging/io/file_io/data/updateHeaderString.html" class="code" title="function updateHeaderString(globalName)">updateHeaderString</a>(glo);
+0009</pre></div>
+<hr><address>Generated on Thu 19-Apr-2012 16:55:20 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

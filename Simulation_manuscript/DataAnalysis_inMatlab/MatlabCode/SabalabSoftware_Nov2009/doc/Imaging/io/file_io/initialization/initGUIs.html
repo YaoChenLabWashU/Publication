@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of initGUIs</title>
+  <meta name="keywords" content="initGUIs">
+  <meta name="description" content="opens and interprets and initialization file">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../../index.html">Home</a> &gt;  <a href="../../../index.html">Imaging</a> &gt; <a href="../../index.html">io</a> &gt; <a href="#">file_io</a> &gt; <a href="index.html">initialization</a> &gt; initGUIs.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../../index.html"><img alt="<" border="0" src="../../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for Imaging\io\file_io\initialization&nbsp;<img alt=">" border="0" src="../../../../right.png"></a></td></tr></table>-->
+
+<h1>initGUIs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>opens and interprets and initialization file</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function [out,fname,pname,ext]=initGUIs(fileName, callCallbacks, file) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> opens and interprets and initialization file</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../Imaging/guis/gui_handling/addGUIOfGlobal.html" class="code" title="function addGUIOfGlobal(globalName, guiName)">addGUIOfGlobal</a>	add a GUI to the list of GUIs associated with a global variable</li><li><a href="../../../../Imaging/guis/gui_handling/existGlobal.html" class="code" title="function out=existGlobal(globalName)">existGlobal</a>	</li><li><a href="../../../../Imaging/guis/gui_handling/getGuiOfGlobal.html" class="code" title="function out=getGuiOfGlobal(globalName)">getGuiOfGlobal</a>	</li><li><a href="../../../../Imaging/guis/gui_handling/setGlobalConfigStatus.html" class="code" title="function setGlobalConfigStatus(globalName, configStatus)">setGlobalConfigStatus</a>	</li><li><a href="../../../../Imaging/guis/gui_handling/setUserDataByGUIName.html" class="code" title="function setUserDataByGUIName(guiLoc, param, value)">setUserDataByGUIName</a>	</li><li><a href="../../../../Imaging/guis/gui_handling/setUserDataByGlobal.html" class="code" title="function setUserDataByGlobal(globalName, param, value)">setUserDataByGlobal</a>	</li><li><a href="../../../../Imaging/guis/gui_handling/structNameParts.html" class="code" title="function [outTopName, outStructName, outFieldName] = structNameParts(s)">structNameParts</a>	</li><li><a href="../../../../Imaging/guis/gui_handling/tokenize.html" class="code" title="function out=tokenize(line)">tokenize</a>	</li><li><a href="../../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>	given the name of a global variable, find and update the GUI that contains it</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../Imaging/FluoProcessing/initRatios.html" class="code" title="function initRatios">initRatios</a>	</li><li><a href="../../../../Imaging/FluoProcessing/loadFluorAnalysisSettings.html" class="code" title="function loadFluorAnalysisSettings(pname, fname)">loadFluorAnalysisSettings</a>	</li><li><a href="../../../../Imaging/blaster/initBlaster.html" class="code" title="function initBlaster">initBlaster</a>	initBlaser % initializes the guis and variables necessary for the blaster</li><li><a href="../../../../Imaging/io/file_io/configurations/loadConfig.html" class="code" title="function loadConfig()">loadConfig</a>	</li><li><a href="../../../../Imaging/io/file_io/configurations/opencfg.html" class="code" title="function out=opencfg(fileName)">opencfg</a>	opens and processes a CONFIG (*.CFG) FILE</li><li><a href="openini.html" class="code" title="function out=openini(fileName)">openini</a>	</li><li><a href="../../../../Imaging/io/file_io/users/openusr.html" class="code" title="function out=openusr(fileName)">openusr</a>	</li><li><a href="../../../../Imaging/io/scanFieldControl/loadStandardModeConfig.html" class="code" title="function loadStandardModeConfig()">loadStandardModeConfig</a>	</li><li><a href="../../../../Timer/loadUserSettings.html" class="code" title="function loadUserSettings(pname, fname)">loadUserSettings</a>	Allows user to select a settings file (*.ini) from disk and loads it</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [out,fname,pname,ext]=initGUIs(fileName, callCallbacks, file)</a>
+0002 <span class="comment">% opens and interprets and initialization file</span>
+0003 <span class="comment">%</span>
+0004 
+0005 <span class="comment">% Author: Bernardo Sabatini 1/21/1</span>
+0006 <span class="comment">%</span>
+0007 
+0008 <span class="comment">% variables</span>
+0009 <span class="comment">%     currentStructure     a string containing the name of structure to which we are currently</span>
+0010 <span class="comment">%                        adding a field and gui parameters</span>
+0011 
+0012     out=0;
+0013     fname=<span class="string">''</span>;
+0014     pname=<span class="string">''</span>;
+0015     ext=<span class="string">''</span>;
+0016     <span class="keyword">if</span> nargin~=3
+0017     <span class="comment">% open file and read in by line ignoring comments</span>
+0018         fid=fopen(fileName, <span class="string">'r'</span>);
+0019         <span class="keyword">if</span> fid==-1
+0020             disp([<span class="string">'initGUIs: Error: Unable to open file '</span> fileName ]);
+0021             <span class="keyword">return</span>
+0022         <span class="keyword">else</span>
+0023             out=1;
+0024             [fullName, per, mf]=fopen(fid);
+0025             fclose(fid);
+0026             [pname, fname, ext]=fileparts(fullName);
+0027         <span class="keyword">end</span>
+0028         file = textread(fullName,<span class="string">'%s'</span>, <span class="string">'commentstyle'</span>, <span class="string">'matlab'</span>, <span class="string">'delimiter'</span>, <span class="string">'\n'</span>);
+0029     <span class="keyword">end</span>
+0030         
+0031     currentStructure=[];
+0032     variableList={};
+0033     
+0034     lineCounter=0;
+0035     <span class="keyword">while</span> lineCounter&lt;length(file)                <span class="comment">% step through each line of the file</span>
+0036         lineCounter=lineCounter+1;
+0037         tokens=<a href="../../../../Imaging/guis/gui_handling/tokenize.html" class="code" title="function out=tokenize(line)">tokenize</a>(file{lineCounter});        <span class="comment">% turn each line into a cell array of tokens (words)</span>
+0038 
+0039         <span class="keyword">if</span> ~isempty(tokens)                    <span class="comment">% are there words on this line?</span>
+0040             <span class="keyword">if</span> strcmp(tokens{1}, <span class="string">'%'</span>)       <span class="comment">% if comment line, skip it</span>
+0041             <span class="keyword">elseif</span> strcmp(tokens{1}, <span class="string">'structure'</span>)        <span class="comment">% are we starting a new structure?</span>
+0042                 <span class="keyword">if</span> ~isempty(currentStructure)
+0043                     currentStructure=[currentStructure <span class="string">'.'</span> tokens{2}];
+0044                 <span class="keyword">else</span>
+0045                     currentStructure=tokens{2};
+0046                 <span class="keyword">end</span>
+0047                 [topName, structName, fieldName]=<a href="../../../../Imaging/guis/gui_handling/structNameParts.html" class="code" title="function [outTopName, outStructName, outFieldName] = structNameParts(s)">structNameParts</a>(currentStructure);    
+0048                 
+0049                 eval([<span class="string">'global '</span> topName <span class="string">';'</span>]);        <span class="comment">% get a global reference to the correct top level variable</span>
+0050                 <span class="keyword">if</span> ~exist(topName,<span class="string">'var'</span>)
+0051                     eval([topName <span class="string">'=[];'</span>]);
+0052                 <span class="keyword">end</span>
+0053                 <span class="keyword">if</span> ~isempty(fieldName)
+0054                     <span class="keyword">if</span> ~eval([<span class="string">'isfield('</span> structName <span class="string">','''</span> fieldName <span class="string">''');'</span>])
+0055                         eval([currentStructure <span class="string">'=[];'</span>]);
+0056                     <span class="keyword">end</span>
+0057                 <span class="keyword">end</span>
+0058                 
+0059             <span class="keyword">elseif</span> strcmp(tokens{1}, <span class="string">'endstructure'</span>)         <span class="comment">% are we ending a structure?</span>
+0060                 periods=findstr(currentStructure, <span class="string">'.'</span>);        <span class="comment">% then trim currentStructure depending on whether it</span>
+0061                 <span class="keyword">if</span> any(periods)                                <span class="comment">% has any subfields</span>
+0062                     currentStructure=currentStructure(1:periods(length(periods))-1);
+0063                 <span class="keyword">else</span>
+0064                     currentStructure=[];
+0065                 <span class="keyword">end</span>
+0066                 
+0067             <span class="keyword">else</span>                                            <span class="comment">% it must be a fieldname[=val] [param, value]* line</span>
+0068                 fieldName=tokens{1};                        <span class="comment">% get fieldName</span>
+0069                 
+0070                 startingValue=[];
+0071                 equ=findstr(fieldName, <span class="string">'='</span>);                <span class="comment">% is there a initialization value?</span>
+0072                 tokenCounter=2;
+0073                 <span class="keyword">if</span> any(equ)
+0074                     startingValue=fieldName(equ(1)+1:end);    <span class="comment">% get initialization value</span>
+0075                     fieldName=fieldName(1:equ(1)-1);        <span class="comment">% get fieldname without init value</span>
+0076                     <span class="keyword">if</span> isempty(startingValue)
+0077                         startingValue=[];
+0078                     <span class="keyword">elseif</span> startingValue(1)==<span class="string">''''</span>            <span class="comment">% it's a string</span>
+0079                         <span class="keyword">if</span> (startingValue(end)~=<span class="string">''''</span>) || (length(startingValue)==1)
+0080                             done=0;
+0081                             <span class="keyword">while</span> ~done
+0082                                 startingValue=[startingValue <span class="string">' '</span> tokens{tokenCounter}];
+0083                                 <span class="keyword">if</span> tokens{tokenCounter}(end)==<span class="string">''''</span>
+0084                                     done=1;
+0085                                 <span class="keyword">end</span>
+0086                                 tokenCounter=tokenCounter+1;
+0087                                 <span class="keyword">if</span> (tokenCounter&gt;length(tokens)) &amp;&amp; ~done
+0088                                     disp([<span class="string">'initGUIs: error in string initial value for '</span> fieldName]);
+0089                                     done=1;
+0090                                 <span class="keyword">end</span>
+0091                             <span class="keyword">end</span>
+0092                         <span class="keyword">end</span>
+0093                     <span class="keyword">elseif</span> startingValue(1)==<span class="string">'['</span>        <span class="comment">% it's a numeric array -- string arrays not supported</span>
+0094                         <span class="keyword">if</span> (startingValue(end)~=<span class="string">']'</span>) || (length(startingValue)==1)
+0095                             done=0;
+0096                             <span class="keyword">while</span> ~done
+0097                                 startingValue=[startingValue <span class="string">' '</span> tokens{tokenCounter}];
+0098                                 <span class="keyword">if</span> tokens{tokenCounter}(end)==<span class="string">']'</span>
+0099                                     done=1;
+0100                                 <span class="keyword">end</span>
+0101                                 tokenCounter=tokenCounter+1;
+0102                                 <span class="keyword">if</span> (tokenCounter&gt;length(tokens)) &amp;&amp; ~done
+0103                                     disp([<span class="string">'initGUIs: error in array initial value for '</span> fieldName]);
+0104                                     done=1;
+0105                                 <span class="keyword">end</span>
+0106                             <span class="keyword">end</span>
+0107                         <span class="keyword">end</span>
+0108                     <span class="keyword">elseif</span> startingValue(1)==<span class="string">'{'</span>        <span class="comment">% it's a cell array -- only empty is supported</span>
+0109                         <span class="keyword">if</span> (startingValue(end)~=<span class="string">'}'</span>) || (length(startingValue)==1)
+0110                             done=0;
+0111                             <span class="keyword">while</span> ~done
+0112                                 startingValue=[startingValue <span class="string">' '</span> tokens{tokenCounter}];
+0113                                 <span class="keyword">if</span> tokens{tokenCounter}(end)==<span class="string">']'</span>
+0114                                     done=1;
+0115                                 <span class="keyword">end</span>
+0116                                 tokenCounter=tokenCounter+1;
+0117                                 <span class="keyword">if</span> (tokenCounter&gt;length(tokens)) &amp;&amp; ~done
+0118                                     disp([<span class="string">'initGUIs: error in array initial value for '</span> fieldName]);
+0119                                     done=1;
+0120                                 <span class="keyword">end</span>
+0121                             <span class="keyword">end</span>
+0122                         <span class="keyword">end</span>
+0123 
+0124                     <span class="keyword">else</span>
+0125                         val=str2num(startingValue);
+0126                         <span class="keyword">if</span> isempty(val) || ~isnumeric(val)
+0127                             <span class="keyword">if</span> ~isempty(startingValue)
+0128                                 <span class="keyword">if</span> startingValue(1)~=<span class="string">''''</span> | startingValue(end)~=<span class="string">''''</span>
+0129                                     startingValue=[<span class="string">''''</span> startingValue <span class="string">''''</span>];
+0130                                 <span class="keyword">end</span>
+0131                             <span class="keyword">else</span>
+0132                                 startingValue=<span class="string">'0'</span>;
+0133                             <span class="keyword">end</span>
+0134                         <span class="keyword">end</span> 
+0135                     <span class="keyword">end</span>
+0136                 <span class="keyword">end</span>
+0137 
+0138                 <span class="keyword">if</span> isempty(currentStructure)                        <span class="comment">% must be a global variable and not the field of a global</span>
+0139                     fullVariableName=fieldName;
+0140                     eval([<span class="string">'global '</span> fullVariableName]);                <span class="comment">% get access to the global</span>
+0141                     <span class="keyword">if</span> ~exist(fullVariableName,<span class="string">'var'</span>)                <span class="comment">% if global does not exist...</span>
+0142                         eval([fullVariableName <span class="string">'='</span> startingValue <span class="string">';'</span>]);        <span class="comment">% create it.</span>
+0143                     <span class="keyword">elseif</span> ~isempty(startingValue)&gt;0                    <span class="comment">% if global exists and there is an init value ...</span>
+0144                         eval([fullVariableName <span class="string">'='</span> startingValue <span class="string">';'</span>])     <span class="comment">% initialize global.</span>
+0145                     <span class="keyword">end</span>
+0146                 <span class="keyword">else</span>                                                <span class="comment">% we are dealing with the field of a global</span>
+0147                     fullVariableName=[currentStructure <span class="string">'.'</span> fieldName];
+0148                     <span class="keyword">if</span> ~isempty(startingValue)&gt;0                                            <span class="comment">% if there is an init value ...</span>
+0149                         eval([fullVariableName <span class="string">'='</span> startingValue <span class="string">';'</span>])     <span class="comment">% set it</span>
+0150                     <span class="keyword">elseif</span> ~eval([<span class="string">'isfield('</span> currentStructure <span class="string">','''</span> fieldName <span class="string">''');'</span>])     <span class="comment">% if not, if field does not exist ...</span>
+0151                         eval([fullVariableName <span class="string">'=[];'</span>])                    <span class="comment">% initialize it</span>
+0152                     <span class="keyword">end</span>
+0153                 <span class="keyword">end</span>
+0154 
+0155                 variableList=[variableList, {fullVariableName}];
+0156                 validGUI=0;
+0157                 <span class="keyword">if</span> length(tokens)&gt;1
+0158 <span class="comment">%                    tokenCounter=2;</span>
+0159                     <span class="keyword">while</span> tokenCounter&lt;length(tokens)                            <span class="comment">% loop through [param, value]*</span>
+0160                         param=tokens{tokenCounter};
+0161                         <span class="keyword">if</span> strcmp(param, <span class="string">'...'</span>)                    <span class="comment">% continuation marker</span>
+0162                             lineCounter=lineCounter+1;                <span class="comment">% advance to next line in file</span>
+0163                             tokens=<a href="../../../../Imaging/guis/gui_handling/tokenize.html" class="code" title="function out=tokenize(line)">tokenize</a>(file{lineCounter});        <span class="comment">% turn each line into a cell array of tokens (words)</span>
+0164                             tokenCounter=1;
+0165                             param=tokens{tokenCounter};
+0166                         <span class="keyword">end</span>
+0167                         value=tokens{tokenCounter+1};
+0168                         <span class="keyword">if</span> strcmp(param, <span class="string">'%'</span>)                       <span class="comment">% found comment field. Skip line</span>
+0169                             <span class="keyword">break</span>;
+0170                         <span class="keyword">else</span>                                        <span class="comment">% not a comment line</span>
+0171                             <span class="keyword">if</span> strcmp(param, <span class="string">'Gui'</span>)                        <span class="comment">% special case for associating a GUI to a Global</span>
+0172                                 <span class="keyword">if</span> ~<a href="../../../../Imaging/guis/gui_handling/existGlobal.html" class="code" title="function out=existGlobal(globalName)">existGlobal</a>(value)
+0173                                     disp([<span class="string">'initGUIs: GUI '</span> value <span class="string">' for '</span> fullVariableName <span class="string">' does not exist.  Skipping userdata...'</span>]);
+0174                                 <span class="keyword">else</span>
+0175                                     validGUI=1;
+0176                                     <a href="../../../../Imaging/guis/gui_handling/addGUIOfGlobal.html" class="code" title="function addGUIOfGlobal(globalName, guiName)">addGUIOfGlobal</a>(fullVariableName, value);
+0177                                     <span class="keyword">try</span>
+0178                                         <a href="../../../../Imaging/guis/gui_handling/setUserDataByGUIName.html" class="code" title="function setUserDataByGUIName(guiLoc, param, value)">setUserDataByGUIName</a>({value}, <span class="string">'Global'</span>, fullVariableName);    
+0179                                     <span class="keyword">catch</span>
+0180                                         error([<span class="string">'initGuis : setUserDataByGUIName gave error : '</span> fullVariableName <span class="string">' '</span> value <span class="string">' : '</span> lasterr]);
+0181                                     <span class="keyword">end</span>
+0182                                 <span class="keyword">end</span>
+0183                             <span class="keyword">elseif</span> strcmp(param, <span class="string">'Config'</span>)                <span class="comment">% special case for labelling a global as part of a configuration</span>
+0184                                 <a href="../../../../Imaging/guis/gui_handling/setGlobalConfigStatus.html" class="code" title="function setGlobalConfigStatus(globalName, configStatus)">setGlobalConfigStatus</a>(fullVariableName, value);
+0185                             <span class="keyword">elseif</span> strcmp(param, <span class="string">'Database'</span>)
+0186                                 addDBObservation(fullVariableName, value);
+0187                             <span class="keyword">else</span>                                        <span class="comment">% put everything else in UserData</span>
+0188                                 <span class="keyword">if</span> validGUI==1
+0189                                     vNum=str2num(value);
+0190                                     <span class="keyword">if</span> isnumeric(vNum) &amp;&amp; (length(vNum)==1)    <span class="comment">% can it be a number?</span>
+0191                                         value=vNum;                            <span class="comment">% yes, then make it a number</span>
+0192                                     <span class="keyword">end</span>
+0193                                     <span class="keyword">try</span>
+0194                                         <a href="../../../../Imaging/guis/gui_handling/setUserDataByGlobal.html" class="code" title="function setUserDataByGlobal(globalName, param, value)">setUserDataByGlobal</a>(fullVariableName, param, value);    <span class="comment">% put in UserData</span>
+0195                                     <span class="keyword">catch</span>
+0196                                         error([<span class="string">'initGuis : setUserDataByGlobal gave error : '</span> fullVariableName <span class="string">' '</span> param <span class="string">' : '</span> lasterr]);
+0197                                     <span class="keyword">end</span>
+0198                                 <span class="keyword">end</span>
+0199                             <span class="keyword">end</span>
+0200                         <span class="keyword">end</span>
+0201                         tokenCounter=tokenCounter+2;
+0202                     <span class="keyword">end</span>
+0203                 <span class="keyword">end</span>
+0204                 <a href="../../../../Imaging/guis/gui_handling/updateGUIByGlobal.html" class="code" title="function updateGUIByGlobal(globalName)">updateGUIByGlobal</a>(fullVariableName);                <span class="comment">% update all the GUIs that deal with the global variable</span>
+0205             <span class="keyword">end</span>
+0206         <span class="keyword">end</span>
+0207     <span class="keyword">end</span>
+0208 
+0209     
+0210     <span class="comment">% Now execute all the callbacks that were collected during the processing of the</span>
+0211     <span class="comment">% *.ini.  This ensures that everything is correct after the fields in the GUIs</span>
+0212     <span class="comment">% have been changed by the initialization.</span>
+0213     
+0214     <span class="keyword">if</span> nargin&lt;2
+0215         callCallbacks=1;
+0216     <span class="keyword">end</span>
+0217     
+0218     <span class="keyword">if</span> callCallbacks
+0219         doneCallBacks=<span class="string">';;;'</span>;
+0220         <span class="keyword">for</span> i=1:length(variableList)
+0221             entry=variableList{i};
+0222             GUIList=<a href="../../../../Imaging/guis/gui_handling/getGuiOfGlobal.html" class="code" title="function out=getGuiOfGlobal(globalName)">getGuiOfGlobal</a>(entry);
+0223             <span class="keyword">if</span> ~isempty(GUIList)
+0224                 <span class="keyword">for</span> count=1:length(GUIList)
+0225                     GUI=GUIList{count};
+0226                     <span class="keyword">if</span> ~isempty(GUI)
+0227                         [topGUI, sGui, fGui]=<a href="../../../../Imaging/guis/gui_handling/structNameParts.html" class="code" title="function [outTopName, outStructName, outFieldName] = structNameParts(s)">structNameParts</a>(GUI);
+0228                         eval([<span class="string">'global '</span> topGUI]);
+0229                         funcName=<span class="string">''</span>;
+0230                         eval([<span class="string">'funcName=getUserDataField('</span> GUI <span class="string">', ''Callback'');'</span>]);
+0231                         <span class="keyword">if</span> ~isempty(funcName)
+0232                             <span class="keyword">if</span> isempty(findstr(doneCallBacks, [<span class="string">';'</span> funcName <span class="string">';'</span>]))
+0233                                 doneCallBacks=[doneCallBacks funcName <span class="string">';'</span>];
+0234     <span class="comment">%                            disp(['DoGUICallback(' GUI ');']);        % for debugging</span>
+0235                                 eval([<span class="string">'DoGUICallback('</span> GUI <span class="string">');'</span>]);
+0236                             <span class="keyword">end</span>
+0237                         <span class="keyword">end</span>
+0238                     <span class="keyword">end</span>
+0239                 <span class="keyword">end</span>
+0240             <span class="keyword">end</span>
+0241         <span class="keyword">end</span>
+0242     <span class="keyword">end</span>
+0243     
+0244</pre></div>
+<hr><address>Generated on Thu 19-Apr-2012 16:55:20 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

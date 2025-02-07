@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of updateKeepAllSlicesCheckMark</title>
+  <meta name="keywords" content="updateKeepAllSlicesCheckMark">
+  <meta name="description" content="BSMOD - 1/1/2 - sets check mark next to keepAllSlicesInMemory selection in settings menu">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="../../index.html">Imaging</a> &gt; <a href="../index.html">guis</a> &gt; <a href="index.html">gui_handling</a> &gt; updateKeepAllSlicesCheckMark.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for Imaging\guis\gui_handling&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>updateKeepAllSlicesCheckMark
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>BSMOD - 1/1/2 - sets check mark next to keepAllSlicesInMemory selection in settings menu</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function updateKeepAllSlicesCheckMark </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> BSMOD - 1/1/2 - sets check mark next to keepAllSlicesInMemory selection in settings menu</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="getPullDownMenuIndex.html" class="code" title="function out=getPullDownMenuIndex(menu, label)">getPullDownMenuIndex</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../Imaging/guis/gui_callbacks/toggleKeepAllSlicesInMemory.html" class="code" title="function toggleKeepAllSlicesInMemory">toggleKeepAllSlicesInMemory</a>	BSMOD - 1/1/2 - callback when user selects 'keepAllSlicesInMemory' from 'settings' menu</li><li><a href="../../../Imaging/io/initImaging.html" class="code" title="function initImaging(userFile, analysisMode)">initImaging</a>	</li><li><a href="../../../Imaging/timerFunctions/timerUserSettings_Imaging.html" class="code" title="function timerUserSettings_Imaging">timerUserSettings_Imaging</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function updateKeepAllSlicesCheckMark</a>
+0002 <span class="comment">% BSMOD - 1/1/2 - sets check mark next to keepAllSlicesInMemory selection in settings menu</span>
+0003 
+0004     <span class="keyword">global</span> gh state
+0005     <span class="comment">% get the index of the standard mode selection of the settings menu</span>
+0006     children=get(gh.siGUI_ImagingControls.Settings, <span class="string">'Children'</span>);            
+0007     index=<a href="getPullDownMenuIndex.html" class="code" title="function out=getPullDownMenuIndex(menu, label)">getPullDownMenuIndex</a>(gh.siGUI_ImagingControls.Settings, <span class="string">'Keep all slices in memory'</span>);
+0008     
+0009     <span class="keyword">if</span> state.internal.keepAllSlicesInMemory==0
+0010         set(children(index), <span class="string">'Checked'</span>, <span class="string">'off'</span>);
+0011         <span class="keyword">if</span> ~state.files.autoSave
+0012             beep;
+0013             errordlg({ <span class="keyword">...</span>
+0014                 <span class="string">'''Keep All Slices In Memory'' is OFF and ''Auto Save'' is OFF.'</span> , <span class="keyword">...</span>
+0015                 <span class="string">'Data will be lost for all acquisitions of more than 1 slice.'</span>, <span class="keyword">...</span>
+0016                 <span class="string">'Recommend turning ''Auto Save'' on.'</span>}, <span class="keyword">...</span>
+0017                 <span class="string">'Warning'</span>, 0);
+0018         <span class="keyword">end</span>
+0019     <span class="keyword">else</span>
+0020         set(children(index), <span class="string">'Checked'</span>, <span class="string">'on'</span>);
+0021     <span class="keyword">end</span>
+0022</pre></div>
+<hr><address>Generated on Thu 19-Apr-2012 16:55:20 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
