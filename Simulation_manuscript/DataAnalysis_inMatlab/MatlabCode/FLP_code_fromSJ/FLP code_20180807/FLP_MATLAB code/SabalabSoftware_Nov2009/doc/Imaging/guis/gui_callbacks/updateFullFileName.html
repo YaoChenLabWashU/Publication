@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of updateFullFileName</title>
+  <meta name="keywords" content="updateFullFileName">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../../../index.html">Home</a> &gt;  <a href="../../index.html">Imaging</a> &gt; <a href="../index.html">guis</a> &gt; <a href="index.html">gui_callbacks</a> &gt; updateFullFileName.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../../../index.html"><img alt="<" border="0" src="../../../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for Imaging\guis\gui_callbacks&nbsp;<img alt=">" border="0" src="../../../right.png"></a></td></tr></table>-->
+
+<h1>updateFullFileName
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function updateFullFileName(h) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../Imaging/io/file_io/data/zeroPadNum2Str.html" class="code" title="function s=zeroPadNum2Str(n)">zeroPadNum2Str</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../Imaging/io/file_io/data/checkFileBeforeSave.html" class="code" title="function out = checkFileBeforeSave(fullname)">checkFileBeforeSave</a>	This function checks if the file about to be saved already exists</li><li><a href="../../../Imaging/io/file_io/data/saveHeaderStructureAs.html" class="code" title="function out=saveHeaderStructureAs">saveHeaderStructureAs</a>	</li><li><a href="../../../Imaging/io/file_io/data/savingInfoIsOK.html" class="code" title="function out=savingInfoIsOK(physOnly)">savingInfoIsOK</a>	updated by tp 10/25/01</li><li><a href="../../../Imaging/io/file_io/data/setSavePath.html" class="code" title="function setSavePath">setSavePath</a>	</li><li><a href="../../../Imaging/io/scanFieldControl/TNSetPath.html" class="code" title="function TNSetPath">TNSetPath</a>	</li><li><a href="../../../Timer/timerRegisterPackageDone.html" class="code" title="function timerRegisterPackageDone(package)">timerRegisterPackageDone</a>	</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function updateFullFileName(h)</a>
+0002     <span class="keyword">global</span> state
+0003     <span class="keyword">if</span> ~ischar(state.files.baseName)
+0004         state.files.baseName=<span class="string">''</span>;
+0005     <span class="keyword">end</span>
+0006     <span class="keyword">if</span> ~ischar(state.files.savePath)
+0007         state.files.savePath=<span class="string">''</span>;
+0008     <span class="keyword">end</span>
+0009     <span class="keyword">try</span>
+0010         state.files.fullFileName=fullfile(state.files.savePath, [state.files.baseName <a href="../../../Imaging/io/file_io/data/zeroPadNum2Str.html" class="code" title="function s=zeroPadNum2Str(n)">zeroPadNum2Str</a>(state.files.fileCounter)]);
+0011     <span class="keyword">catch</span>
+0012     <span class="keyword">end</span>
+0013</pre></div>
+<hr><address>Generated on Thu 19-Apr-2012 16:55:20 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

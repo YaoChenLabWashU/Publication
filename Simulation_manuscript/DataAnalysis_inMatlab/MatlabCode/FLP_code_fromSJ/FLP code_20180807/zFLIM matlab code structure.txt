@@ -1,0 +1,50 @@
+zFLIM matlab code structure
+
+1. starting up zFLIM
+makeTimerPckagesMenu: C:\SJ\FLP_MATLAB code\MATLAB_FLIMmultiboard\Timer\makeTimerPackagesMenu.m
+timerGetPackageNames: C:\SJ\FLP_MATLAB code\MATLAB_FLIMmultiboard\Timer\timerGetPackageNames.m
+selectPackageFromMenu: C:\SJ\FLP_MATLAB code\SabalabSoftware_Nov2009\Timer\selectPackageFromMenu.m
+timerSetActiveStatus: C:\SJ\FLP_MATLAB code\SabalabSoftware_Nov2009\Timer\timerSetActiveStatus.m
+timerCallPackageFunctions: C:\SJ\FLP_MATLAB code\SabalabSoftware_Nov2009\Timer\timerCallPackageFunctions.m
+
+initTimer
+timerSetActiveStatus(packageList, status)
+	timerInit_zFLIM
+		FLIM_Init
+		laserControl X
+		FLIMgui
+		initializeRFswitches
+
+
+2. start acquisition
+timerDoOne/timerLoop (>timerMainLoop) <- PLUG zFLP_DoAll here
+	CALLING:  timerFirstSetup_zFLIM
+	CALLING:  timerSetup_zFLIM
+	CALLING:  timerStart_zFLIM
+	CALLING:  timerReadyForTrigger_zFLIM
+	timerTrigger
+
+
+2. makeFrameByStripes > ending acquisition (when does this get activated? phsyiology code?)
+endAcquisition 
+	timerRegisterPackageDone
+		timerProcess_zFLIM
+
+
+
+gui
+FLIMgui
+->after clicking Start GUI
+Lifetime
+spc_main
+LifetimeMap1
+Projection1
+
+linesPerFrame and pixlesPerLine do not match scan size X and Y for image channel 1
+currently FLIM single data acquisition mode
+copy pasting the value to fill the lastAcquiredFrame
+spc_drawlifetime: LUT error
+drawLifetime
+
+
+	timerCallPackageFunctions('Process', package);	?

@@ -1,0 +1,103 @@
+structure state
+   user=''
+   structure db
+   endstructure
+   figurePath=''
+   structure software
+   endstructure
+   structure init
+   endstructure
+   structure daq
+   endstructure
+   structure acq
+   endstructure
+   structure internal
+      saveHeaderAsTxt=1
+   endstructure
+   structure pulses
+      pulseSetName='pulseSet'
+      pulseSetPath=''
+      autoSavePatterns=1
+   endstructure
+   structure files
+      autoSave=1
+      automaticOverwrite=0
+   endstructure
+   structure timer
+      analysisFunctionPath=''
+   endstructure
+   structure cycle
+      cycleName=''
+      cyclePath=''
+   endstructure
+   structure windowPositions
+      chooser_position=[103.8      49.76923            56      11.84615]
+      chooser_visible='off'
+      timerMainControls_position=[6.4      72.6923         45.6      14.0769]
+      timerMainControls_visible='on'
+      pulseMaker_position=[153      15.61538          59.6      11.69231]
+      pulseMaker_visible='off'
+      advancedCycleGui_position=[59.6      38.3077           59      32.0769]
+      advancedCycleGui_visible='on'
+      notebook_position=[110.2      74.30769          81.6      12.84615]
+      notebook_visible='on'
+      notebookLine_position=[233.2      79.30769          79.8      6.076923]
+      notebookLine_visible='off'
+      traceAnalyzer_position=[121.6      28.46154          62.2      40.15385]
+      traceAnalyzer_visible='on'
+   endstructure
+   structure pcell
+      pcellScanning1=40
+      pcellFlyBack1=0
+      pcellDefaultLevel1=-1
+      pcellDualLevel1=0
+      pcellScanning2=0
+      pcellFlyBack2=0
+      pcellDefaultLevel2=-1
+      pcellDualLevel2=0
+      boxSize=10
+      pcellPowerCal1=
+      pcellPowerCal2=
+      pcellTablePath=''
+      pcellTableName1=''
+      pcellTableName2=''
+   endstructure
+   structure phys
+      structure daq
+      endstructure
+      structure internal
+      endstructure
+      structure settings
+      endstructure
+      structure scope
+      endstructure
+   endstructure
+   structure motor
+   endstructure
+   structure piezo
+   endstructure
+   structure laser
+   endstructure
+   structure spc
+      structure acq
+         structure timer
+         endstructure
+      endstructure
+      structure init
+      endstructure
+      structure internal
+      endstructure
+      structure files
+      endstructure
+   endstructure
+   structure notebook
+   endstructure
+   structure FLP
+   endstructure
+   structure analysis
+      setupPath=''
+      setupName=''
+   endstructure
+   structure lm
+   endstructure
+endstructure
