@@ -1,0 +1,7 @@
+{
+  "sensor_parameters": [{"tau": 2.14, "population": 0.5854}, 
+                        {"tau": 0.69, "population": 0.4146}],
+  "sensor_counts": 652126, "autofluorescence_counts": 0,
+  "afterpulse_ratio": 0,
+  "background_distribution": 0
+}
