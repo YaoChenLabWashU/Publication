@@ -1,4 +1,6 @@
-# Main function to load the simulation parameters, run simulations, and analyze the simulated data
+"""
+Main function to load the simulation parameters, run simulations, and analyze the simulated data
+"""
 import shutil
 import os
 import datetime
