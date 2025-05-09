@@ -1,10 +1,19 @@
 """
 Photon population
 
-Assumptions:
+Processes:
+  ------
+  Simulations:
+  Drawing samples from ideal population with 512 channels
   Convolution is distributive
-  256 Time Channels only, can expand to 512
   PRF has same number of time channels
+  PRF convolution -> Wrap around after 256 channels -> Only take the first 256 channels as final simulated sensor data
+  Add autofluorescence
+  Add afterpulse
+  Add background
+  ------
+  Analysis:
+  Fitting and empirical lifetime calculation
 """
 import random
 import numpy as np
