@@ -3,7 +3,8 @@ Create population of lifetimes based on ideal bi-exp decay
 
 Assumptions:
   Convolution is distributive
-  256 Time Channels only, can expand to 512
+  512 channels spanning 25 ns
+  After IRF convolution, the final simulated histogram will be 256 channels spanning 12.5 channels
   PRF has same number of time channels
 """
 from collections import namedtuple
