@@ -16,7 +16,7 @@ Simulation_inMatlab: Functions used for simulation in FLiSimBA, written in MATLA
 
 DataAnaysis_inMatlab: Functions used for FLIM data acquisition and analysis (fitting functions and empirical lifetime calculation).
 
-SimulationAnalysis_inPython: Functions used for simulation in FLiSimBA, written in Python. Also includes functions for analysis (fitting and empirical lifetime calculation)
+Simulation_inPython: Functions used for simulation in FLiSimBA, written in Python. Also includes functions for analysis (fitting and empirical lifetime calculation)
 
 
 
