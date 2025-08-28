@@ -31,9 +31,9 @@ Histogram=[xsim' ysim'];
 % time x with this number of repeats.
 counter=1;
 for i=1:512
-    for j=1:round(Histogram(i,2))
+    % for j=1:round(Histogram(i,2))
         Population(counter:round(counter+Histogram(i,2)-1))=Histogram(i,1);
-    end
+    % end
     counter=counter+round(Histogram(i,2));
 end
 
