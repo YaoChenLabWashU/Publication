@@ -1,0 +1,129 @@
+================================================================================
+CONCEPT MAP: EDFig4f.ipynb
+================================================================================
+
+PURPOSE
+-------
+Plots a PhosphoPlot for a single mPFC FLIM-mAKAR experiment
+(ltFLiPAKARmemEEGEMG0094, mouse 4775), showing the instantaneous binding
+fraction as a density scatter plot with a phase-portrait-style layout.
+Produces Extended Data Figure 4f for the manuscript.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source directory: /Volumes/yaochen/Active/Lizzie/FLP_data/
+Baseline indices: /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/
+                  FLiP_Experiment_Summary.xlsx
+
+One experiment:
+
+  Experiment ID                  Mouse ID
+  ltFLiPAKARmemEEGEMG0094       4775
+
+Raw file format: .mat files (concat*.mat) in experiment folder.
+Exclusion rule: First 3 acquisitions excluded; baseline range from spreadsheet.
+Sleep scoring: Not applied (sleep_states = False).
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+Raw .mat file
+  |
+  +--> pd.read_excel(FLiP_Experiment_Summary.xlsx)
+  |      Reads baseline acquisition range for this experiment.
+  |
+  +--> choose_excluded_acqs()
+  |      first_acqs = 3; pull_baseline = True using baseline_idxs from Excel.
+  |
+  +--> build_classes()
+  |      Constructs a FLiPExperiment object without sleep scoring.
+  |      |
+  |      +--> FLiPExperiment()  [called internally]
+  |             Loads concatenated .mat file, extracts FLiP lifetime.
+  |             sleep_states = False: no sleep scoring is performed.
+  |
+  +--> PKA.PhosphoPlot()
+         Generates a density scatter plot of instantaneous binding fraction
+         (FLP_exp.Lifetime) with customizable arrow scale and transparency.
+         filterbin_width = 40, scale = 8, alpha = 1
+         headwidth = 3, headlength = 4, headaxislength = 3.5, width = 0.002
+         Returns updated (fig, ax).
+
+  fig.savefig(os.path.join(FLP_exp.rawdatdir, 'PhosPhoplot' + b + fig_ext))
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  PKA.choose_excluded_acqs()        PKA_Sleep.PKA_utils     PKA_utils.py : line 1607
+  PKA.build_classes()               PKA_Sleep.PKA_utils     PKA_utils.py : line 309
+  PKA.PhosphoPlot()                 PKA_Sleep.PKA_utils     PKA_utils.py
+  PKA.Graphing_Utils.make_bigandbold() PKA_Sleep.           Graphing_Utils.py : line 40
+                                      Graphing_Utils
+
+Functions called internally (not directly in notebook):
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  FLiPExperiment()  [class]         PKA_Sleep.FLPExp_class  FLPExp_class.py : line 14
+  SWS_utils                         neuroscience_sleep_     used within FLiPExperiment
+                                      scoring
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value           Meaning
+  ---------------------  --------------  ----------------------------------------
+  epoch_len              4 s             Sleep scoring epoch length
+  sleep_states           False           Sleep scoring not applied
+  microarousals          True            (passed to build_classes; no effect
+                                          when sleep_states=False)
+  gather_timestamps      True            Acquisition start timestamps loaded
+  filterbin_width        40              Bin width for PhosphoPlot density
+  scale                  8               Arrow scale in PhosphoPlot
+  alpha                  1               Opacity of data points
+  fig_ext                .svg            Output file format
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - matplotlib          (pyplot)
+  - scipy               (io.loadmat, ndimage.uniform_filter1d)
+  - pandas
+  - os
+
+Custom packages:
+  - PKA_Sleep
+      Primary analysis package.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+  - neuroscience_sleep_scoring
+      Sleep state utilities (SWS_utils).
+      Used internally by FLiPExperiment.
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Figure saved to experiment raw data directory:
+  /Volumes/yaochen/Active/Lizzie/FLP_data/ltFLiPAKARmemEEGEMG0094/
+  PhosPhoplotltFLiPAKARmemEEGEMG0094.svg
+
+================================================================================

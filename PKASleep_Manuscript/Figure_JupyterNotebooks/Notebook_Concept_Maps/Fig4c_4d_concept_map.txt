@@ -1,0 +1,170 @@
+================================================================================
+CONCEPT MAP: Fig4c_4d.ipynb
+================================================================================
+
+PURPOSE
+-------
+Fits a two-state exponential model to FLiP lifetime from a single mPFC
+FLIM-mAKAR experiment (ltFLiPAKARmemEEGEMG0072, mouse 4610) using BIC
+optimization. Performs a coarse random parameter search followed by local
+L-BFGS-B refinement, parallelized with joblib. Plots 1D BIC profiles across
+each parameter to characterize the landscape. Produces Figures 4c and 4d
+for the manuscript.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source directory: /Volumes/yaochen/Active/Lizzie/FLP_data/
+Baseline indices: /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/
+                  FLiP_Experiment_Summary.xlsx
+Brain region: mPFC; Sensor: FLIM-mAKAR
+
+One experiment:
+
+  Experiment ID                  Mouse ID
+  ltFLiPAKARmemEEGEMG0072        4610
+
+Raw file format: .mat files (concat*.mat) in experiment folder.
+Exclusion rule: First 3 acquisitions excluded; baseline range from spreadsheet.
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+Raw .mat file
+  |
+  +--> choose_excluded_acqs()
+  |      first_acqs = 3; pull_baseline = True from Excel.
+  |
+  +--> build_classes()
+  |      Constructs a FLiPExperiment object.
+  |      microarousals = True
+  |      |
+  |      +--> FLiPExperiment()  [called internally]
+  |             Loads .mat, extracts FLiP lifetime, scores sleep states.
+  |
+  +--> PKA.clip_wake()
+  |      Removes wake-period data; isolates NREM FLiP lifetime segments.
+  |
+  +--> fit_animal_bic_fast()   [defined in notebook]
+  |      Two-stage optimization:
+  |        Stage 1 (coarse search): n=2000 random parameter draws in bounds
+  |                  [B1: 5–300, B2: 5–100, S1: 0.5–0.9, S2: 0.5–0.9]
+  |                  → compute BIC; keep top 40 by BIC
+  |        Stage 2 (local refinement):
+  |                  joblib.Parallel(n_jobs=-1, prefer="threads")
+  |                  scipy.optimize.minimize(L-BFGS-B) from each of the 40 seeds
+  |        Returns best parameters and BIC.
+  |      Best result: BIC = -52632, B1 = 210.4 s, B2 = 30.4 s
+  |
+  +--> PKA.two_model_fit_lin()
+  |      Fits a linear-slope model (comparison baseline).
+  |
+  +--> plot_bic_profiles_1d()   [defined in notebook]
+         Sweeps each of the four parameters across its range (other params fixed
+         at optimum) and plots BIC as a function of that parameter.
+         Produces four 1D profile plots (one per parameter).
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  PKA.choose_excluded_acqs()        PKA_Sleep.PKA_utils     PKA_utils.py : line 1607
+  PKA.build_classes()               PKA_Sleep.PKA_utils     PKA_utils.py : line 309
+  PKA.clip_wake()                   PKA_Sleep.PKA_utils     PKA_utils.py
+  PKA.two_model_fit_lin()           PKA_Sleep.PKA_utils     PKA_utils.py
+  graph.make_bigandbold()           PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 40
+  graph.thick_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.label_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 59
+
+Functions called internally (not directly in notebook):
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  FLiPExperiment()  [class]         PKA_Sleep.FLPExp_class  FLPExp_class.py : line 14
+  SWS_utils                         neuroscience_sleep_     used within FLiPExperiment
+                                      scoring
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+LOCALLY DEFINED FUNCTIONS
+--------------------------------------------------------------------------------
+
+  fit_animal_bic_fast(FLiP_lifetime, sleep_states, bounds, n_coarse=2000,
+                      n_top=40)
+    Defined in: Fig4c_4d.ipynb, cell 6
+    Purpose: Two-stage BIC-optimized parameter search for two-state model.
+    Stage 1: Random search of n_coarse draws; select top n_top by BIC.
+    Stage 2: joblib.Parallel L-BFGS-B refinement from each top seed.
+    Returns: best_pars (B1, B2, S1, S2), best_BIC
+
+  plot_bic_profiles_1d(FLiP_lifetime, sleep_states, best_pars, bounds,
+                       n_points=50)
+    Defined in: Fig4c_4d.ipynb, cell 9
+    Purpose: Plots 1D BIC profile for each of the four parameters.
+    Sweeps each parameter independently with all others fixed at best_pars.
+    Returns: fig, axes
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value                   Meaning
+  ---------------------  ----------------------  ---------------------------------
+  epoch_len              4 s                     Sleep scoring epoch length
+  microarousals          True                    Wake bouts < 16 s as MA
+  n_coarse               2000                    Random draws in coarse search
+  n_top                  40                      Seeds passed to local refinement
+  optimizer              L-BFGS-B                Scipy minimize method
+  n_jobs                 -1                      Use all available CPU cores
+  bounds                 B1: [5, 300] s          Rising time constant
+                         B2: [5, 100] s          Falling time constant
+                         S1: [0.5, 0.9]          Rising asymptote
+                         S2: [0.5, 0.9]          Falling asymptote
+  best result            BIC = -52632            Optimal BIC
+                         B1 = 210.4 s            Rising tau
+                         B2 = 30.4 s             Falling tau
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - matplotlib          (pyplot)
+  - scipy               (optimize.minimize, signal.savgol_filter)
+  - pandas
+  - os
+  - joblib              (Parallel, delayed)
+
+Custom packages:
+  - PKA_Sleep
+      Primary analysis package.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+  - neuroscience_sleep_scoring
+      Sleep state utilities (SWS_utils).
+      Used internally by FLiPExperiment.
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Figures saved to:
+  /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/Thesis_Figures/
+  Component_Figures/Figure_3/
+  BIC_profiles_1d_{experiment}.ps
+  BIC_profiles_1d_{experiment}.png
+
+================================================================================

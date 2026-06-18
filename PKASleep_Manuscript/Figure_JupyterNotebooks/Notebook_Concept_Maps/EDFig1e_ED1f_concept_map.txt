@@ -1,0 +1,195 @@
+================================================================================
+CONCEPT MAP: EDFig1e_ED1f.ipynb
+================================================================================
+
+PURPOSE
+-------
+Fits and compares exponential versus linear decay models to FLiP lifetime
+traces from two contexts in FLIM-mAKAR mPFC experiments: (1) following
+scopolamine injection (ED Fig 1e), and (2) during spontaneous sustained NREM
+bouts (ED Fig 1f). Uses BIC to determine which model better describes
+dephosphorylation kinetics. Statistics compare exponential decay constants
+(log-transformed) between injection and baseline conditions.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source directory: /Volumes/yaochen/Active/Lizzie/FLP_data/
+Injection info: /Volumes/yaochen/Active/Lizzie/FLP_data/injection_info.json
+
+Group 1 — Scopolamine injection (6 recordings, 6 animals; used for ED Fig 1e):
+
+  Experiment ID                  Mouse ID
+  ltFLiPAKARmemEEGEMG0096-5     4775
+  ltFLiPAKARmemEEGEMG0104-2     5075
+  ltFLiPAKARmemEEGEMG0105-2     5078
+  ltFLiPAKARmemEEGEMG0106-2     5047
+  ltFLiPAKARmemEEGEMG0107-2     5076
+  ltFLiPAKARmemEEGEMG0108       5046
+
+Group 2 — Baseline recordings (7 recordings, 6 animals; used for ED Fig 1f and
+           for paired comparison with Group 1):
+
+  Experiment ID                  Mouse ID
+  ltFLiPAKARmemEEGEMG0094       4775
+  ltFLiPAKARmemEEGEMG0099-1     5075
+  ltFLiPAKARmemEEGEMG0099-2     5075
+  ltFLiPAKARmemEEGEMG0100-1     5078
+  ltFLiPAKARmemEEGEMG0101-1     5046
+  ltFLiPAKARmemEEGEMG0102-1     5047
+  ltFLiPAKARmemEEGEMG0103-1     5076
+
+Raw file format: .mat files (concat*.mat) in each experiment folder.
+Exclusion rule: No acquisitions excluded (first_acqs = 0).
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+Raw .mat files + injection_info.json
+  |
+  +--> choose_excluded_acqs()
+  |      first_acqs = 0; no acquisitions dropped.
+  |
+  +--> build_classes()
+  |      Constructs FLiPExperiment objects.
+  |      |
+  |      +--> FLiPExperiment()  [called internally]
+  |             Loads concatenated .mat file, extracts FLiP lifetime,
+  |             applies sleep scoring and microarousal labeling.
+  |
+  +--> FLP_exp.add_drug_epochs()
+  |      Adds epoch labels (EpochID): 1=saline, 2=drug, using injection_info.json.
+  |      post_injection_buffer = 100 s
+  |
+  +--> [Injection context — ED Fig 1e]
+  |      For each acquisition containing EpochID == 2:
+  |        savgol_filter(LFT, 11, 2)
+  |        curve_fit(exponential_model, t-t[0], filt_LFT) → popt_exp, BIC_exp
+  |        curve_fit(linear_model, t-t[0], filt_LFT)      → popt_lin, BIC_lin
+  |        BIC = n * log(SSE/n) + k * log(n)
+  |
+  +--> [Baseline NREM context — ED Fig 1f]
+  |      FLP_exp.ss_onset_offset() on merged sleep states (REM → NREM)
+  |      Filter NREM bouts: duration > 100 s, preceding wake > 75 s
+  |      savgol_filter → curve_fit exponential + linear → BIC
+  |
+  +--> group_by_animal()  [defined in notebook]
+  |      Groups log(b) from exponential fits by animal, filtering NaN/inf.
+  |
+  +--> FLPstats.nested_analysis_stats_v2()
+         Stage 1: robust HuberT per-animal means.
+         Stage 2: sign permutation test (primary) + paired t-test (secondary).
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  PKA.choose_excluded_acqs()        PKA_Sleep.PKA_utils     PKA_utils.py : line 1607
+  PKA.build_classes()               PKA_Sleep.PKA_utils     PKA_utils.py : line 309
+  FLP_exp.add_drug_epochs()         PKA_Sleep.FLPExp_class  FLPExp_class.py
+  FLP_exp.ss_onset_offset()         PKA_Sleep.FLPExp_class  FLPExp_class.py
+  FLPstats.nested_analysis_stats_v2() PKA_Sleep.FLPstats    FLPstats.py
+  graph.linegraph_w_error()         PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.get_jittered_x()            PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.swarm_plot()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.thick_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.label_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+
+Functions called internally (not directly in notebook):
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  FLiPExperiment()  [class]         PKA_Sleep.FLPExp_class  FLPExp_class.py : line 14
+  SWS_utils                         neuroscience_sleep_     used within FLiPExperiment
+                                      scoring
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+LOCALLY DEFINED FUNCTIONS
+--------------------------------------------------------------------------------
+
+  exponential_model(x, a, b, c)
+    Defined in: EDFig1e_ED1f.ipynb, cell 2
+    Formula: a * exp(-b * x) + c
+    Used for: fitting dephosphorylation traces; b = decay rate, 1/b = time constant
+
+  linear_model(x, m, c)
+    Defined in: EDFig1e_ED1f.ipynb, cell 2
+    Formula: m * x + c
+    Used for: BIC comparison against exponential
+
+  group_by_animal(pars_list, animal_list)
+    Defined in: EDFig1e_ED1f.ipynb, cell 10 (nested_flpstats_v2 cell)
+    Purpose: Strips NaN entries from pars_list, groups log(b) values by animal.
+    Returns: dict mapping animal ID → list of log(decay rate) values
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value           Meaning
+  ---------------------  --------------  ----------------------------------------
+  epoch_len              4 s             Sleep scoring epoch length
+  filter_bounds          [None, None]    No bandpass filtering applied
+  microarousals          True            Wake bouts < 16 s relabeled as MA
+  first_acqs             0               No acquisitions excluded
+  gather_timestamps      True            Acquisition start timestamps loaded
+  post_inj_buffer        100 s           Buffer after injection for epoch labeling
+  savgol_window          11              Savitzky-Golay filter window
+  savgol_poly            2               Savitzky-Golay polynomial order
+  NREM_bout_min          100 s           Minimum NREM bout duration (baseline)
+  wake_bout_min          75 s            Minimum preceding wake duration (baseline)
+  BIC formula            n*log(SSE/n)    BIC with k params and n data points
+                           + k*log(n)
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - matplotlib          (pyplot)
+  - scipy               (signal.savgol_filter, optimize.curve_fit, stats.sem)
+  - pandas
+  - json
+  - os
+  - glob
+  - time
+  - copy                (deepcopy)
+  - importlib
+  - sklearn             (metrics.r2_score)
+
+Custom packages:
+  - PKA_Sleep
+      Primary analysis package; includes FLPstats submodule.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+  - neuroscience_sleep_scoring
+      Sleep state utilities (SWS_utils).
+      Used internally by FLiPExperiment.
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Intermediate fit figures (per acquisition) saved to:
+  /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/Working_figs/
+  PKA_Sleep_Project/twostate_model/NREM_Dephosphorylation_Fits/fit_{b}
+
+Summary figure saved to:
+  /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/Working_figs/
+  PKA_Sleep_Project/twostate_model/slope_compare.ps
+
+================================================================================

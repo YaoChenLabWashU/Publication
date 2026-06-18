@@ -1,0 +1,176 @@
+================================================================================
+CONCEPT MAP: Fig3a_3b_3c_3d_ED4a_ED4b_ED4c_ED4d.ipynb
+================================================================================
+
+PURPOSE
+-------
+Computes mutual information between EEG band power and FLiP lifetime across
+four frequency bands (Delta, Theta, Sigma, Beta) for the 24-experiment mPFC
+FLIM-mAKAR dataset. Plots normalized cross-correlation / mutual information
+time courses, tests peak timing against zero with Wilcoxon signed-rank tests,
+and compares experimental to shuffled data. Produces Figure 3a–d and Extended
+Data Figure 4a–d for the manuscript.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source directory: /Volumes/yaochen/Active/Lizzie/FLP_data/
+Baseline indices: /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/
+                  FLiP_Experiment_Summary.xlsx
+Brain region: mPFC; Sensor: FLIM-mAKAR
+EEG channels analyzed: 0 and 2 (two channels per experiment)
+
+24 recordings, 18 animals:
+
+  Experiment ID                  Mouse ID
+  ltFLiPAKARmemEEGEMG0009        3825
+  ltFLiPAKARmemEEGEMG0010        3825
+  dgFLiPmemAKAREEGEMG0003        3825
+  dgFLiPmemAKAREEGEMG0008        3825
+  ltFLiPAKARmemEEGEMG0036        4346-t5-7
+  ltFLiPAKARmemEEGEMG0043        4346-t5-7
+  kgFLiPAKAREEGEMG0009           4507
+  ltFLiPAKARmemEEGEMG0055        4502
+  ltFLiPAKARmemEEGEMG0068        4507
+  ltFLiPAKARmemEEGEMG0072        4610
+  ltFLiPAKARmemEEGEMG0085        4713
+  ltFLiPAKARmemEEGEMG0090-1      4769
+  ltFLiPAKARmemEEGEMG0094        4775
+  ltFLiPAKARmemEEGEMG0097-1      5782
+  ltFLiPAKARmemEEGEMG0098-1      5007
+  ltFLiPAKARmemEEGEMG0099-1      5075
+  ltFLiPAKARmemEEGEMG0099-2      5075
+  ltFLiPAKARmemEEGEMG0100-1      5078
+  ltFLiPAKARmemEEGEMG0101-1      5046
+  ltFLiPAKARmemEEGEMG0102-1      5047
+  ltFLiPAKARmemEEGEMG0103-1      5076
+  kgFLiPAKAREEGEMG0018           5582
+  kgFLiPAKAREEGEMG0019           5583
+  kgFLiPAKAREEGEMG0020           5577
+
+Raw file format: .mat files (concat*.mat) in each experiment folder.
+Exclusion rule: First 3 acquisitions excluded; baseline range from spreadsheet.
+Sleep scoring: sleep_states = False (mutual information uses continuous data).
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+Raw .mat files
+  |
+  +--> choose_excluded_acqs()
+  |      first_acqs = 3; pull_baseline = True from Excel.
+  |
+  +--> build_classes()
+  |      sleep_states = False; shuffle_window = 100
+  |      |
+  |      +--> FLiPExperiment()  [called internally]
+  |             Loads .mat file, extracts FLiP lifetime.
+  |
+  +--> [loop per experiment, per EEG channel (0, 2), per band]
+  |
+  +--> SWS_utils.bandPower()
+  |      Computes band power time series from EEG.
+  |      window = 10 s; noverlap = 9 s (1 s steps)
+  |      freq_dict: Delta[0.5,4], Theta[4,8], Sigma[10,15], Beta[15,30]
+  |
+  +--> PKA.interpolate_photometry()
+  |      Resamples FLiP lifetime to match band power timebase.
+  |
+  +--> PKA.nlcc_mi()
+  |      Computes normalized lag cross-correlation and mutual information
+  |      between band power and FLiP lifetime.
+  |      max_lag = 250 s (250 samples); num_bins = 100
+  |
+  +--> Per-animal averaging
+  |      Averages MI time courses across recordings from same animal.
+  |
+  +--> [across all animals]
+  |      Mean ± SEM; plot window = [-100, 100] s
+  |
+  +--> scipy.stats.wilcoxon()
+         One-sample Wilcoxon on peak lag values vs zero.
+         All bands / both channels: p < 0.001
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  PKA.choose_excluded_acqs()        PKA_Sleep.PKA_utils     PKA_utils.py : line 1607
+  PKA.build_classes()               PKA_Sleep.PKA_utils     PKA_utils.py : line 309
+  PKA.interpolate_photometry()      PKA_Sleep.PKA_utils     PKA_utils.py
+  PKA.nlcc_mi()                     PKA_Sleep.PKA_utils     PKA_utils.py
+  SWS_utils.bandPower()             neuroscience_sleep_     SWS_utils.py
+                                      scoring
+  graph.make_bigandbold()           PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 40
+  graph.thick_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.label_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 59
+  graph.linegraph_w_error()         PKA_Sleep.Graphing_Utils Graphing_Utils.py
+
+Functions called internally (not directly in notebook):
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  FLiPExperiment()  [class]         PKA_Sleep.FLPExp_class  FLPExp_class.py : line 14
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value                   Meaning
+  ---------------------  ----------------------  ---------------------------------
+  epoch_len              4 s                     Sleep scoring epoch length
+  sleep_states           False                   No sleep scoring; continuous data
+  shuffle_window         100 s                   Chunk size for photometry shuffle
+  EEG channels           [0, 2]                  Channels analyzed
+  freq_dict              Delta: [0.5, 4] Hz      EEG frequency bands
+                         Theta: [4, 8] Hz
+                         Sigma: [10, 15] Hz
+                         Beta:  [15, 30] Hz
+  bandPower window       10 s                    FFT window for power estimation
+  bandPower noverlap     9 s                     Overlap → 1 s time resolution
+  max_lag                250 samples (s)         Maximum lag for MI computation
+  num_bins               100                     Bins for mutual information
+  plot window            [-100, 100] s           Display lag window
+  stats                  Wilcoxon signed-rank    Peak lag vs zero; all p < 0.001
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - matplotlib          (pyplot)
+  - scipy               (stats.wilcoxon)
+  - pandas
+  - os
+
+Custom packages:
+  - PKA_Sleep
+      Primary analysis package.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+  - neuroscience_sleep_scoring
+      Sleep state utilities (SWS_utils.bandPower).
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/neuroscience_sleep_scoring/
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Figure saved to:
+  /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/Thesis_Figures/
+  Component_Figures/Figure_2/mutual_information_mPFC.ps
+
+================================================================================

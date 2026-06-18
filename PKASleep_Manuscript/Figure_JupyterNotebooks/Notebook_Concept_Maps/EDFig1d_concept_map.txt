@@ -1,0 +1,116 @@
+================================================================================
+CONCEPT MAP: EDFig1d.ipynb
+================================================================================
+
+PURPOSE
+-------
+Plots stimulation-triggered binding fraction traces for the biPAC sensor at
+four stimulation pulse lengths (10, 100, 500, 1000 ms) at a fixed light power
+(100.5 µW). Traces are shown as mean ± SEM of ΔBinding fraction (change from
+pre-stimulus baseline). Produces Extended Data Figure 1d for the manuscript.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source file: /Volumes/yaochen/Active/zach/flip/multi_exp_traces_dict.npy
+
+Pre-computed dictionary containing:
+  Key                  Contents
+  -------------------  -------------------------------------------------------
+  traces               List of binding fraction trace arrays (one per trial)
+  time                 Time vector (seconds) relative to stimulation onset
+  stim_power(uW)       Stimulation power in µW for each trial
+  stim_length          Stimulation pulse duration in ms for each trial
+
+No FLiPExperiment class is constructed; data are loaded directly from the
+pre-computed .npy file produced by Zach's pipeline.
+
+Filter applied: stim_power(uW) == 100.5 µW
+Grouping: by stim_length (10, 100, 500, 1000 ms)
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+multi_exp_traces_dict.npy
+  |
+  +--> pd.DataFrame(stim_traces).dropna()
+  |      Converts to DataFrame, drops rows with NaN.
+  |
+  +--> [loop over stim_length values]
+         |
+         +--> Filter rows: stim_power(uW) == 100.5 & stim_length == s
+         |
+         +--> [-(trace - trace[0]) for each trace]
+         |      Computes ΔBinding fraction (inverted, baseline-subtracted).
+         |
+         +--> np.stack() + np.nanmean() + scipy.stats.sem()
+         |      Mean and SEM across trials.
+         |
+         +--> graph.linegraph_w_error()
+                Plots mean trace with shaded SEM on shared axis.
+
+  ax.set_xlim([-100, 200])
+  ax.set_yticks([0, 0.02, 0.04])
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  graph.make_bigandbold()           PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 40
+  graph.linegraph_w_error()         PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.label_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 59
+  graph.thick_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value                   Meaning
+  ---------------------  ----------------------  --------------------------------
+  stim_power             100.5 µW                Fixed stimulation power
+  stim_lengths           [10, 100, 500, 1000]    Pulse durations plotted (ms)
+  x_window               [-100, 200] s           Plot time window
+  yticks                 [0, 0.02, 0.04]         Y-axis tick values
+  trace_colors           {10:'#2266AB',          Color per stimulation length
+                          100:'#74ACCF',
+                          500:'#F26D44',
+                          1000:'#D63127'}
+  ylabel                 ΔBinding fraction       Y-axis label
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - pandas
+  - matplotlib          (pyplot)
+  - scipy               (stats)
+
+Custom packages:
+  - PKA_Sleep
+      Graphing utilities only (Graphing_Utils).
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Figure saved to:
+  /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/Thesis_Figures/
+  Component_Figures/Figure_1/biPAC_stim_fig.ps
+
+================================================================================

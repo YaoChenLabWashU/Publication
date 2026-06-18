@@ -1,0 +1,203 @@
+================================================================================
+CONCEPT MAP: Fig5e_5f_ED5d_ED5e_ED5f.ipynb
+================================================================================
+
+PURPOSE
+-------
+Fits a Cox frailty proportional hazards model (executed in R) to predict
+time-to-wake from NREM sleep using three predictors: PKA-SP (z-scored FLiP
+lifetime), microarousal count, and ZT time. Prepares the data in Python,
+calls an external R script, and loads/visualizes bootstrap and permutation
+results including cumulative microarousal effects and shuffled control
+comparisons. Produces Figures 5e, 5f and Extended Data Figures 5d–f for
+the manuscript.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source directory: /Volumes/yaochen/Active/Lizzie/FLP_data/
+Baseline indices: /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/
+                  FLiP_Experiment_Summary.xlsx
+R script: final_frailty_model_withMAZT_logtime.R
+Pre-computed bootstrap/permutation files: {exp_rawdatdir}/HazardModel/
+Brain region: mPFC; Sensor: FLIM-mAKAR
+
+24 recordings, 18 animals:
+
+  Experiment ID                  Mouse ID
+  ltFLiPAKARmemEEGEMG0009        3825
+  ltFLiPAKARmemEEGEMG0010        3825
+  dgFLiPmemAKAREEGEMG0003        3825
+  dgFLiPmemAKAREEGEMG0008        3825
+  ltFLiPAKARmemEEGEMG0036        4346-t5-7
+  ltFLiPAKARmemEEGEMG0043        4346-t5-7
+  kgFLiPAKAREEGEMG0009           4507
+  ltFLiPAKARmemEEGEMG0055        4502
+  ltFLiPAKARmemEEGEMG0068        4507
+  ltFLiPAKARmemEEGEMG0072        4610
+  ltFLiPAKARmemEEGEMG0085        4713
+  ltFLiPAKARmemEEGEMG0090-1      4769
+  ltFLiPAKARmemEEGEMG0094        4775
+  ltFLiPAKARmemEEGEMG0097-1      5782
+  ltFLiPAKARmemEEGEMG0098-1      5007
+  ltFLiPAKARmemEEGEMG0099-1      5075
+  ltFLiPAKARmemEEGEMG0099-2      5075
+  ltFLiPAKARmemEEGEMG0100-1      5078
+  ltFLiPAKARmemEEGEMG0101-1      5046
+  ltFLiPAKARmemEEGEMG0102-1      5047
+  ltFLiPAKARmemEEGEMG0103-1      5076
+  kgFLiPAKAREEGEMG0018           5582
+  kgFLiPAKAREEGEMG0019           5583
+  kgFLiPAKAREEGEMG0020           5577
+
+Raw file format: .mat files (concat*.mat) in each experiment folder.
+Exclusion rule: First 3 acquisitions excluded; baseline range from spreadsheet.
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+Raw .mat files
+  |
+  +--> choose_excluded_acqs()
+  |      first_acqs = 3; pull_baseline = True from Excel.
+  |
+  +--> build_classes()
+  |      sleep_states = True; microarousals = False (MAs defined manually)
+  |      |
+  |      +--> FLiPExperiment()  [called internally]
+  |             Loads .mat, extracts FLiP lifetime, sleep states.
+  |
+  +--> PKA.define_MAs()
+  |      Identifies microarousal bouts: MA threshold m = 16 s.
+  |      Returns MA onset/offset arrays per acquisition.
+  |
+  +--> FLP_exp.ss_onset_offset()
+  |      Extracts NREM bout onset/offset times.
+  |
+  +--> PKA.find_continuous()
+  |      Identifies contiguous NREM segments for further processing.
+  |
+  +--> PKA.shuffle_singlestate()
+  |      Generates per-experiment shuffled FLiP lifetime (chunk shuffled).
+  |      Z-score computed within each experiment.
+  |
+  +--> PKA.hazard_model()   [primary analysis]
+  |      Prepares survival data table (event = wake, time = NREM duration,
+  |      predictors = PKA-SP, MA count, ZT category).
+  |      Exports .csv to each experiment folder.
+  |      Calls R: final_frailty_model_withMAZT_logtime.R via subprocess.
+  |      Returns: hazard ratio table loaded from R output .csv.
+  |
+  +--> [Load bootstrap/permutation results]
+  |      natsort.natsorted(glob.glob(HazardModel/*.npy)) per experiment
+  |      Loads pre-computed bootstrap HR distributions and permutation HRs.
+  |
+  +--> [Cumulative MA analysis]
+         Plots how PKA-SP hazard ratio changes as MA threshold m increases.
+         Loads pre-computed results from HazardModel/ folders.
+
+Model results at m = 16 s:
+  PKA-SP:  HR = 0.8008 [0.7639, 0.8394], p = 2.48e-20
+  MA:      HR = 0.7617,                  p = 2.73e-58
+  MA attenuation of PKA-SP HR: 34.4%
+  Shuffled PKA-SP: HR = 1.009,           p = 0.61
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  PKA.choose_excluded_acqs()        PKA_Sleep.PKA_utils     PKA_utils.py : line 1607
+  PKA.build_classes()               PKA_Sleep.PKA_utils     PKA_utils.py : line 309
+  PKA.define_MAs()                  PKA_Sleep.PKA_utils     PKA_utils.py
+  PKA.find_continuous()             PKA_Sleep.PKA_utils     PKA_utils.py
+  PKA.shuffle_singlestate()         PKA_Sleep.PKA_utils     PKA_utils.py
+  PKA.hazard_model()                PKA_Sleep.PKA_utils     PKA_utils.py
+  FLP_exp.ss_onset_offset()         PKA_Sleep.FLPExp_class  FLPExp_class.py
+  graph.make_bigandbold()           PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 40
+  graph.thick_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.label_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 59
+  graph.linegraph_w_error()         PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.swarm_plot()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+
+Functions called internally (not directly in notebook):
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  FLiPExperiment()  [class]         PKA_Sleep.FLPExp_class  FLPExp_class.py : line 14
+  SWS_utils                         neuroscience_sleep_     used within FLiPExperiment
+                                      scoring
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value           Meaning
+  ---------------------  --------------  ----------------------------------------
+  epoch_len              4 s             Sleep scoring epoch length
+  microarousals          False           MAs identified manually via define_MAs()
+  MA threshold m         16 s            Maximum wake bout duration = MA
+  R script               final_frailty_  Cox frailty model with logtime
+                           model_withMAZT
+                           _logtime.R
+  model predictors       PKA-SP, MA      Predictors in Cox frailty model
+                           count, ZT time
+  HR PKA-SP              0.8008          Hazard ratio at m=16 (lower=protective)
+  HR MA                  0.7617          Hazard ratio for microarousal count
+  PKA-SP attenuation     34.4%           PKA-SP HR reduction when MA included
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - matplotlib          (pyplot)
+  - pandas
+  - os
+  - glob
+  - copy                (deepcopy)
+  - importlib
+  - natsort             (natsorted)
+
+Custom packages:
+  - PKA_Sleep
+      Primary analysis package.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+  - neuroscience_sleep_scoring
+      Sleep state utilities (SWS_utils).
+      Used internally by FLiPExperiment.
+
+External:
+  - R                   (called via subprocess from PKA.hazard_model())
+      Package: coxme (for frailty term)
+      Script: final_frailty_model_withMAZT_logtime.R
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Figures saved to:
+  /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/Thesis_Figures/
+  Component_Figures/Figure_6/
+  HazardModel_REMasSleep_16MA.png
+  HazardModel_REMasSleep_16MA.ps
+  HazardModel_Atten_mPFC_16MA.png
+  HazardModel_Atten_mPFC_16MA.ps
+  Hazard_ModelCompare_mPFC_16MA.png
+  Hazard_ModelCompare_mPFC_16MA.ps
+  CummulativeMA_Model_withZT_REMasSleep.ps
+
+================================================================================

@@ -1,0 +1,179 @@
+================================================================================
+CONCEPT MAP: Fig1f.ipynb
+================================================================================
+
+PURPOSE
+-------
+Computes and plots transition-triggered FLiP lifetime (zeroed, not Z-scored)
+for two groups in dorsal CA1: FLIM-mAKAR (membrane-targeted experimental
+sensor) and PKI (protein kinase A inhibitor control). Runs nested statistics
+comparing the two groups across all transition types. Produces Figure 1f
+for the manuscript.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source directory: /Volumes/yaochen/Active/Lizzie/FLP_data/
+Baseline indices: /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/
+                  FLiP_Experiment_Summary.xlsx
+Brain region: Dorsal CA1
+Sensor comparison: FLIM-mAKAR vs PKI
+
+Group 1 — FLIM-mAKAR (10 recordings, 3 animals):
+
+  Experiment ID                  Mouse ID
+  ltFLiPAKARmemEEGEMG0005        3707-3
+  ltFLiPAKARmemEEGEMG0006        3707-3
+  ltFLiPAKARmemEEGEMG0007        3971
+  ltFLiPAKARmemEEGEMG0008        3971
+  ltFLiPAKARmemEEGEMG0011        3848-t3
+  dgFLiPmemAKAREEGEMG0001        3971
+  dgFLiPmemAKAREEGEMG0002        3707-3
+  dgFLiPmemAKAREEGEMG0004        3848-t3
+  dgFLiPmemAKAREEGEMG0006        3971
+  dgFLiPmemAKAREEGEMG0007        3707-3
+
+Group 2 — PKI (6 recordings, 3 animals):
+
+  Experiment ID                  Mouse ID
+  ltFLiPAKAREEGEMG0088           3021-t7
+  ltFLiPAKAREEGEMG0089           3021-t7
+  ltFLiPAKAREEGEMG0090           3021-t7
+  ltFLiPAKARmemEEGEMG0037        4345
+  ltFLiPAKARmemEEGEMG0042        4345
+  ltFLiPAKARmemEEGEMG0080        4503
+
+Raw file format: .mat files (concat*.mat) in each experiment folder.
+Exclusion rule: First 3 acquisitions excluded; baseline range from spreadsheet.
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+Raw .mat files (both groups)
+  |
+  +--> choose_excluded_acqs()
+  |      first_acqs = 3; pull_baseline = True from Excel.
+  |
+  +--> build_classes()   [called separately per group]
+  |      Constructs FLiPExperiment objects.
+  |      microarousals = True; zscore = False; raw_lifetime = False
+  |      |
+  |      +--> FLiPExperiment()  [called internally]
+  |             Loads .mat file, extracts FLiP lifetime, scores sleep states.
+  |
+  +--> transition_triggered_lifetime()   [called per group]
+  |      Aligns zeroed FLiP lifetime to sleep state transitions.
+  |      Transitions: NREM-Wake, REM-Wake, Microarousals, Wake-NREM, NREM-REM
+  |      experimental_sensor = 'FLIM-mAKAR'
+  |      window = [50, 150] s; NREM_cutoff = 100 s; wake_cutoff = 100 s
+  |      zscore = False; raw_lifetime = False
+  |      Returns: fig_dict, lifetime_dict (per group)
+  |
+  +--> transition_triggered_quant()   [per group, per transition type]
+  |      Quantifies amplitude in specified post-transition windows.
+  |      NREM-Wake: [50,75]; REM-Wake: [50,75]; MA: [10,30]
+  |      Wake-NREM: [75,100]; NREM-REM: [75,100]
+  |
+  +--> nested_analysis_stats_v2()   [FLIM-mAKAR vs PKI, per transition]
+         Stage 1: robust HuberT per-animal means.
+         Stage 2: sign permutation test (primary) + Welch t-test (secondary).
+         MA result: p = 0.003
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  PKA.choose_excluded_acqs()        PKA_Sleep.PKA_utils     PKA_utils.py : line 1607
+  PKA.build_classes()               PKA_Sleep.PKA_utils     PKA_utils.py : line 309
+  PKA.transition_triggered_         PKA_Sleep.              genPKA_Dynamics.py : line 17
+    lifetime()                        genPKA_Dynamics
+  PKA.transition_triggered_quant()  PKA_Sleep.              genPKA_Dynamics.py
+                                      genPKA_Dynamics
+  FLPstats.nested_analysis_         PKA_Sleep.FLPstats      FLPstats.py
+    stats_v2()
+  graph.make_bigandbold()           PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 40
+  graph.thick_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.label_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 59
+  graph.swarm_plot()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.get_jittered_x()            PKA_Sleep.Graphing_Utils Graphing_Utils.py
+
+Functions called internally (not directly in notebook):
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  FLiPExperiment()  [class]         PKA_Sleep.FLPExp_class  FLPExp_class.py : line 14
+  transition_triggered_             PKA_Sleep.              AntagonistAnalyses.py : line 340
+    average_drug()                    AntagonistAnalyses    (called within transition_
+                                                             triggered_lifetime)
+  SWS_utils                         neuroscience_sleep_     used within FLiPExperiment
+                                      scoring
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value           Meaning
+  ---------------------  --------------  ----------------------------------------
+  epoch_len              4 s             Sleep scoring epoch length
+  microarousals          True            Wake bouts < 16 s relabeled as MA
+  experimental_sensor    'FLIM-mAKAR'   Label for group 1 sensor
+  window                 [50, 150] s     Pre/post transition plot window
+  NREM_cutoff            100 s           Bout length threshold for NREM split
+  wake_cutoff            100 s           Bout length threshold for Wake split
+  zscore                 False           Zeroed lifetime (not Z-scored)
+  raw_lifetime           False           Use zeroed/normalized lifetime
+  amp_windows            NREM-Wake:      Post-transition amplitude windows (s)
+                           [50,75]
+                         REM-Wake:
+                           [50,75]
+                         Microarousals:
+                           [10,30]
+                         Wake-NREM:
+                           [75,100]
+                         NREM-REM:
+                           [75,100]
+  MA stats result        p = 0.003       Permutation p-value (FLIM-mAKAR vs PKI)
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - matplotlib          (pyplot)
+  - scipy               (stats)
+  - pandas
+  - os
+  - importlib
+
+Custom packages:
+  - PKA_Sleep
+      Primary analysis package.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+  - neuroscience_sleep_scoring
+      Sleep state utilities (SWS_utils).
+      Used internally by FLiPExperiment.
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Figure saved to:
+  /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/Manuscripts/
+  PKASleep/PKASleep_Figures/Component_Figures/Figure_1/
+  CamKII_ICI_FLIM-mAKAR_Dorsal CA1_alltrans_nofilter.ps
+
+================================================================================

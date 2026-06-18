@@ -1,0 +1,233 @@
+================================================================================
+CONCEPT MAP: Fig5h_EDFig5g.ipynb
+================================================================================
+
+PURPOSE
+-------
+Computes the change in FLiP lifetime (binding fraction) across individual NREM
+bouts during the post-sleep-deprivation (post-SD) recovery period and compares
+it to a ZT-matched control window from the same recordings. Sleep bouts are
+extracted and binned by hour within the 6-hour post-SD window. Analysis is run
+twice: once with microarousals absorbed into sleep (include_MA=True) and once
+with MAs treated as arousal breaks (include_MA=False). Mouse-level Wilcoxon
+signed-rank tests compare post-SD to control for each hour bin. Produces
+Figure 5h and Extended Data Figure 5g for the manuscript.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source directory: /Volumes/yaochen/Active/Lizzie/FLP_data/
+Brain region: mPFC; Sensor: FLIM-mAKAR
+
+6 recordings, 6 animals (each experiment used twice — once as SD context,
+once as ZT-matched control context):
+
+  Experiment ID                  Mouse ID
+  kgFLiPAKAREEGEMG0018           5582
+  kgFLiPAKAREEGEMG0019           5583
+  kgFLiPAKAREEGEMG0020           5577
+  kgFLiPAKAREEGEMG0022           5576
+  kgFLiPAKAREEGEMG0023           5580
+  kgFLiPAKAREEGEMG0024           5710
+
+Raw file format: .mat files (concat*.mat) in each experiment folder.
+Exclusion rule: exclude_acqs = False (no acquisitions excluded).
+emp_lifetime = False (raw lifetime used).
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+Raw .mat files
+  |
+  +--> build_classes()   [called twice with same EXP_NAMES — once per context]
+  |      sleep_states = True; microarousals = True; exclude_acqs = False
+  |      shuffle_window = 200; emp_lifetime = False
+  |      |
+  |      +--> FLiPExperiment()  [called internally]
+  |             Loads .mat, extracts FLiP lifetime, sleep states.
+  |
+  +--> [SD window identification — per animal]
+  |      find_zt_window()   [defined in notebook]
+  |        ZT window: ZT0–ZT4 (sd_zt_start=0, sd_zt_duration=4 hr)
+  |        prefer_occurrence = 2 (second ZT0–ZT4 block = first full recording day)
+  |        Returns: start and end indices into FLP_exp.Time
+  |      post_sd_start = ZT4 end time; post_sd_end = post_sd_start + 6 hr
+  |      compute_wake_mean_bf()   [defined in notebook]
+  |        Mean Lifetime during wake epochs in the post-SD window.
+  |        Excludes the first skip_wake_epochs=8 sleep-scoring epochs of each
+  |        wake bout to skip the arousal-onset transient.
+  |
+  +--> [ZT-matched control window — per animal]
+  |      Target ZT range = mean post_sd_zeit_start across SD animals + 6 hr
+  |      find_zt_window()  prefer_occurrence = 1 (first ZT occurrence = baseline)
+  |      compute_wake_mean_bf()  computed in the control window
+  |
+  +--> extract_sleep_bouts()   [defined in notebook; run for each include_MA value]
+  |      Identifies contiguous sleep bout boundaries in the post-SD / control window.
+  |      REM always absorbed (never breaks a bout boundary).
+  |      include_MA=True:  MA absorbed into sleep (only true-wake events break bouts)
+  |      include_MA=False: MA breaks the bout; exclude_post_MA_epochs=4 sleep-scoring
+  |                        epochs after each MA are excluded.
+  |      include_REM=True: bouts can start/end with REM.
+  |
+  +--> compute_bout_deltas()   [defined in notebook]
+  |      delta_mode = 'wakeavg': delta = bout_end_lft − wake_mean_bf
+  |      (wake_mean_bf is the mean Lifetime during wake in the same time window)
+  |      Assigns each delta to an hour bin (0–5) based on bout offset time.
+  |
+  +--> [Mouse-level aggregation]
+  |      Per mouse, per condition (post_sd / control), per hour bin:
+  |        mean across all bouts in that bin → one value per mouse per hour.
+  |
+  +--> scipy.stats.wilcoxon()   [per hour bin, per include_MA value]
+  |      Paired signed-rank test: per-mouse mean post-SD vs control delta.
+  |      Requires ≥ 2 mice with data in both conditions.
+  |      Result: p-value + significance string.
+  |
+  +--> make_ladder()   [defined in notebook; called once per include_MA value]
+         Ladder (line) plot: for each hour bin, draws gray lines connecting
+         each mouse's control → post-SD mean delta.
+         Overlay: scatter points per condition per mouse.
+         Significance brackets drawn above significant hours (p < 0.05).
+         Saves to FIG_DIR in all SAVE_FORMATS.
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  PKA.build_classes()               PKA_Sleep.PKA_utils     PKA_utils.py : line 309
+  graph.make_bigandbold()           PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 40
+
+Functions called internally (not directly in notebook):
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  FLiPExperiment()  [class]         PKA_Sleep.FLPExp_class  FLPExp_class.py : line 14
+  SWS_utils                         neuroscience_sleep_     used within FLiPExperiment
+                                      scoring
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+LOCALLY DEFINED FUNCTIONS
+--------------------------------------------------------------------------------
+
+  save_fig(fig, name, include_MA, include_REM, delta_mode)
+    Defined in: Fig5h_EDFig5g.ipynb, cell 2
+    Purpose: Saves figure to FIG_DIR in all SAVE_FORMATS (.png, .ps).
+    Filename: {name}_{sleep_tag}_{delta_mode}.{fmt}
+      sleep_tag = {sleep|nrem}_{to_wake|to_wake&ma}
+
+  compute_wake_mean_bf(FLP_exp, window_start, window_end, skip_wake_epochs=10)
+    Defined in: Fig5h_EDFig5g.ipynb, cell 4
+    Purpose: Mean Lifetime during wake epochs in a time window, excluding the
+             first skip_wake_epochs (default 10, set to 8 here) sleep-scoring
+             epochs of each wake bout to avoid onset transients.
+    Returns: float (mean) or np.nan if no valid samples.
+
+  find_zt_window(FLP_exp, zt_start, zt_end, prefer_occurrence=2, gap_threshold=100)
+    Defined in: Fig5h_EDFig5g.ipynb, cell 4
+    Purpose: Returns start index, end index, and occurrence count for a given
+             ZT time window. Handles multi-day recordings by splitting on large
+             index gaps (gap_threshold=100).
+    Returns: (start_idx, end_idx, n_occurrences)
+
+  extract_sleep_bouts(FLP_exp, window_start, window_end, include_MA, include_REM,
+                      exclude_post_MA_epochs)
+    Defined in: Fig5h_EDFig5g.ipynb, cell 4
+    Purpose: Identifies contiguous sleep bout boundaries within a time window.
+             REM always absorbed. MA handling and REM filtering controlled by
+             include_MA and include_REM.
+    Returns: list of dicts with onset_idx, offset_idx, onset_time, offset_time.
+
+  compute_bout_deltas(FLP_exp, bouts, window_start, mouse_id, numhours,
+                      delta_mode='absolute', wake_mean_bf=None)
+    Defined in: Fig5h_EDFig5g.ipynb, cell 7
+    Purpose: For each bout, computes the change in Lifetime and assigns it to
+             an hour bin. delta_mode='wakeavg': delta = bout_end − wake_mean_bf.
+    Returns: deltas, hour_bins, mice (parallel lists).
+
+  get_sig_str(p)
+    Defined in: Fig5h_EDFig5g.ipynb, cell 9
+    Purpose: Returns '***', '**', '*', or 'ns' for a p-value.
+
+  make_ladder(ma)
+    Defined in: Fig5h_EDFig5g.ipynb, cell 10
+    Purpose: Plots hour-by-hour ladder connecting each mouse's control →
+             post-SD mean delta. Overlays significance brackets for p < 0.05.
+             Called once per include_MA value.
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value           Meaning
+  ---------------------  --------------  ----------------------------------------
+  epoch_len              4 s             Sleep scoring epoch length
+  numhours               6               Post-SD recovery window duration (hr)
+  shuffle_window         200             Passed to build_classes (not used for
+                                          analysis shuffling in this notebook)
+  microarousals          True            Passed to build_classes for initial
+                                          sleep scoring
+  include_MA             'both'          Runs analysis for True and False
+  include_REM            True            REM absorbed into sleep bouts
+  exclude_post_MA_epochs 4               Sleep-scoring epochs after MA to exclude
+                                          (when include_MA=False)
+  skip_wake_epochs       8               Wake epochs at bout onset to skip in
+                                          wake_mean_bf computation
+  delta_mode             'wakeavg'       delta = bout_end_lft − wake_mean_bf
+  sd_zt_start            0.0             ZT hour for SD start
+  sd_zt_duration_hours   4.0             Duration of SD period (ZT0–ZT4)
+  prefer_occurrence (SD) 2               Use 2nd ZT0–ZT4 block (1st full day)
+  prefer_occurrence (ctrl) 1             Use 1st ZT block (baseline night)
+  gap_threshold          100             Index gap threshold for multi-day split
+  SAVE_FIGS              True            Whether to save output figures
+  SAVE_FORMATS           ['png', 'ps']   Output figure formats
+  color_ctrl             '#0e5aff'       Blue (control condition)
+  color_sd               '#b41f1f'       Red (post-SD condition)
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - matplotlib          (pyplot, patches.Patch)
+  - scipy               (stats.wilcoxon)
+  - os
+
+Custom packages:
+  - PKA_Sleep
+      Primary analysis package.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+  - neuroscience_sleep_scoring
+      Sleep state utilities (SWS_utils).
+      Used internally by FLiPExperiment.
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Figures saved to:
+  /Users/yaochenlab/Library/CloudStorage/Box-Box/ChenLab/Kane/Figures/
+  Sleep_Deprivation/
+  hourly_mouse_mean_ladder_sleep_to_wake_wakeavg.png
+  hourly_mouse_mean_ladder_sleep_to_wake_wakeavg.ps
+  hourly_mouse_mean_ladder_sleep_to_wake&ma_wakeavg.png
+  hourly_mouse_mean_ladder_sleep_to_wake&ma_wakeavg.ps
+
+Note: FIG_DIR is Kane's Box folder, not the Lizzie figures directory.
+
+================================================================================

@@ -1,0 +1,159 @@
+================================================================================
+CONCEPT MAP: Fig1c_1e.ipynb
+================================================================================
+
+PURPOSE
+-------
+Plots representative single-acquisition traces for two experiments (one
+FLIM-AKAR dorsal CA1, one FLIM-mAKAR dorsal CA1) as three-panel figures:
+EEG spectrogram (top), body movement (middle), and sleep states with FLiP
+lifetime on a twin Y-axis (bottom). Produces Figure 1c and 1e for the
+manuscript.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source directory: /Volumes/yaochen/Active/Lizzie/FLP_data/
+Baseline indices: /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/
+                  FLiP_Experiment_Summary.xlsx
+
+Two experiments (representative acquisitions):
+
+  Experiment ID                  Mouse ID    Acquisition
+  ltFLiPAKAREEGEMG0065           2647-10     acq 13
+  ltFLiPAKARmemEEGEMG0005        3707-3      acq 17
+
+Raw file format: .mat files (concat*.mat) in each experiment folder.
+Exclusion rule: first_acqs = 0 (no acquisitions excluded); specific acquisitions
+                selected by spec_acqs = [13, 17].
+EEG sampling rate: 200 Hz.
+Movement raw data: in experiment folder (pulled by pull_movement()).
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+Raw .mat files (per experiment)
+  |
+  +--> choose_excluded_acqs()
+  |      first_acqs = 0; pull_baseline = True from Excel.
+  |
+  +--> build_classes()
+  |      Constructs FLiPExperiment objects.
+  |      shuffle_window = 100; spec_acqs = [13, 17]
+  |      |
+  |      +--> FLiPExperiment()  [called internally]
+  |             Loads .mat file, extracts FLiP lifetime, sleep states.
+  |
+  +--> [loop over spec_acqs, per experiment]
+  |
+  +--> pull_movement()   [defined in notebook]
+  |      Loads bonsai movement .csv for the selected acquisition,
+  |      aligns to photometry timebase.
+  |
+  +--> SWS_utils.plot_spectrogram()
+  |      Computes and plots EEG power spectrogram.
+  |      fs = 200 Hz; freq range = 1–16 Hz; window = 10 s
+  |
+  +--> SWS_utils.movement_processing()
+  |      Smooths and normalizes movement signal for display.
+  |
+  +--> [three-panel subplot]
+         height_ratios = [1, 0.5, 1]
+         Panel 1: EEG spectrogram
+         Panel 2: movement trace
+         Panel 3: sleep state raster (left Y) + FLiP lifetime (right twin Y)
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  PKA.choose_excluded_acqs()        PKA_Sleep.PKA_utils     PKA_utils.py : line 1607
+  PKA.build_classes()               PKA_Sleep.PKA_utils     PKA_utils.py : line 309
+  SWS_utils.plot_spectrogram()      neuroscience_sleep_     SWS_utils.py
+                                      scoring
+  SWS_utils.movement_processing()   neuroscience_sleep_     SWS_utils.py
+                                      scoring
+  graph.make_bigandbold()           PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 40
+  graph.thick_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+
+Functions called internally (not directly in notebook):
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  FLiPExperiment()  [class]         PKA_Sleep.FLPExp_class  FLPExp_class.py : line 14
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+LOCALLY DEFINED FUNCTIONS
+--------------------------------------------------------------------------------
+
+  pull_movement(datadir, acq_start, acq_len=3600)
+    Defined in: Fig1c_1e.ipynb, cell 4
+    Purpose: Loads Bonsai movement .csv file for one acquisition, returns
+             a time vector and movement amplitude array aligned to the
+             photometry recording start.
+    Inputs:
+      datadir   — experiment raw data directory
+      acq_start — acquisition start time (datetime)
+      acq_len   — acquisition length in seconds (default 3600)
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value           Meaning
+  ---------------------  --------------  ----------------------------------------
+  epoch_len              4 s             Sleep scoring epoch length
+  microarousals          True            Wake bouts < 16 s relabeled as MA
+  shuffle_window         100             Chunk size for photometry shuffling
+  first_acqs             0               No acquisitions excluded
+  spec_acqs              [13, 17]        Acquisition numbers to plot
+  EEG fs                 200 Hz          EEG sampling rate
+  spectrogram freq range 1–16 Hz         Frequency band plotted
+  spectrogram window     10 s            FFT window length
+  height_ratios          [1, 0.5, 1]     Subplot height proportions
+  bonsai ts format       "%Y-%m-%dT      Bonsai timestamp format
+                          %H:%M:%S.%f"
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - matplotlib          (pyplot)
+  - pandas
+  - os
+  - time
+  - importlib
+  - datetime            (datetime, timedelta)
+
+Custom packages:
+  - PKA_Sleep
+      Primary analysis package.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+  - neuroscience_sleep_scoring
+      Sleep state utilities (SWS_utils): plot_spectrogram, movement_processing.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/neuroscience_sleep_scoring/
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Per acquisition, per experiment:
+  {experiment_rawdatdir}/photometry_EEG_SS_movement/Acq{n}.png
+
+================================================================================

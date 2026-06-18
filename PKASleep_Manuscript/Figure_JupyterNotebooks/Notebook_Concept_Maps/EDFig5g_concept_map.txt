@@ -1,0 +1,179 @@
+================================================================================
+CONCEPT MAP: EDFig5g.ipynb
+================================================================================
+
+PURPOSE
+-------
+Compares FLiP lifetime change during sleep deprivation (SD) versus a matched
+baseline wake window for 6 mPFC FLIM-mAKAR experiments. For SD, the longest
+continuous wake bout in each recording is identified as the SD period. For
+baseline, a wake bout within a fixed ZT4–ZT8 window is used. Plots FLiP
+lifetime traces across each SD bout and a paired before/after amplitude change
+comparison (SD vs baseline). Produces Extended Data Figure 5g for the
+manuscript.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source directory: /Volumes/yaochen/Active/Lizzie/FLP_data/
+Brain region: mPFC; Sensor: FLIM-mAKAR
+
+6 recordings, 6 animals (same recordings used for both SD and baseline contexts):
+
+  Experiment ID                  Mouse ID
+  kgFLiPAKAREEGEMG0018           5582
+  kgFLiPAKAREEGEMG0019           5583
+  kgFLiPAKAREEGEMG0020           5577
+  kgFLiPAKAREEGEMG0022           5576
+  kgFLiPAKAREEGEMG0023           5580
+  kgFLiPAKAREEGEMG0024           5710
+
+Raw file format: .mat files (concat*.mat) in each experiment folder.
+Exclusion rule: exclude_acqs = False (no acquisitions excluded).
+
+Two contexts per animal:
+  SD context:       longest continuous wake bout in the recording
+  Baseline context: wake bout within ZT4–ZT8 window (prefer_occurrence = 1)
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+Raw .mat files
+  |
+  +--> build_classes()   [called twice — once per context, same EXP_NAMES]
+  |      sleep_states = True; microarousals = True; exclude_acqs = False
+  |      shuffle_window = 200; emp_lifetime = False
+  |      |
+  |      +--> FLiPExperiment()  [called internally]
+  |             Loads .mat, extracts FLiP lifetime, sleep states.
+  |
+  +--> [SD context — per animal]
+  |      find_sd_bout()  [defined in notebook]
+  |        Identifies longest continuous wake bout from FLP_exp.SleepStates.
+  |        Returns: time vector, FLiP lifetime array, ZT time array.
+  |      SD_WakeData[e]['Start Val'] = mean(lft[50–100 s])
+  |      SD_WakeData[e]['End Val']   = mean(lft[last 50 s])
+  |      AmpChange = End Val − Start Val
+  |
+  +--> [Baseline context — per animal]
+  |      find_zt_window_start()  [defined in notebook]
+  |        Finds index of ZT4–ZT8 window in FLP_exp.ZeitTime;
+  |        handles multi-day recordings via gap detection.
+  |      PKA.LFTvals_byState()
+  |        Extracts FLiP lifetime by sleep state within the ZT window.
+  |        time_range = [ZT4 start, ZT4 start + 4 hr]
+  |      Selects first and last wake bouts of sufficient duration.
+  |      Cntrl_WakeData[e]['Start Val'] / ['End Val'] computed same as SD.
+  |
+  +--> Results_ByAnimal
+  |      Aggregates SD and baseline AmpChange per animal.
+  |
+  +--> [Figure: 2-panel]
+         ax1: FLiP lifetime vs ZT time traces (one line per SD recording)
+              colored by animal (magma colormap)
+              x-axis = ZT time (hr), xlim = [0, 4]
+         ax2: Paired plot (baseline vs SD), one line per animal
+              y-axis = ΔBinding Fraction
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  PKA.build_classes()               PKA_Sleep.PKA_utils     PKA_utils.py : line 309
+  PKA.LFTvals_byState()             PKA_Sleep.PKA_utils     PKA_utils.py : line 1569
+  FLP_exp.ss_onset_offset()         PKA_Sleep.FLPExp_class  FLPExp_class.py
+  graph.make_bigandbold()           PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 40
+  graph.get_colormap()              PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.label_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 59
+  graph.thick_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+
+Functions called internally (not directly in notebook):
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  FLiPExperiment()  [class]         PKA_Sleep.FLPExp_class  FLPExp_class.py : line 14
+  SWS_utils                         neuroscience_sleep_     used within FLiPExperiment
+                                      scoring
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+LOCALLY DEFINED FUNCTIONS
+--------------------------------------------------------------------------------
+
+  find_sd_bout(FLP_exp)
+    Defined in: EDFig5g.ipynb, cell 2
+    Purpose: Identifies the longest continuous wake bout (the SD period) in a
+             recording by finding the longest run of SleepStates == 1.
+    Returns: t (time relative to bout start), lft (FLiP lifetime),
+             zt (ZT time), [lft_start, lft_end] indices.
+
+  find_zt_window_start(FLP_exp, zt_start, zt_end, prefer_occurrence=2,
+                       gap_threshold=100)
+    Defined in: EDFig5g.ipynb, cell 2
+    Purpose: Returns the photometry index for the start of a ZT time window.
+             Handles multi-day recordings by splitting on large index gaps.
+    prefer_occurrence: which occurrence of the window to use (1-indexed).
+    Returns: index into FLP_exp.Time, number of occurrences found.
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value           Meaning
+  ---------------------  --------------  ----------------------------------------
+  epoch_len              4 s             Sleep scoring epoch length
+  shuffle_window         200             Passed to build_classes
+  microarousals          True            Wake bouts < 16 s relabeled as MA
+  exclude_acqs           False           No acquisitions excluded
+  emp_lifetime           False           Use raw (not empirical) lifetime
+  window_size            50 s            Window for computing start/end amplitude
+  start_buffer           50 s            Offset into bout before start window
+  ZT_start               4               ZT hour for baseline window start
+  ZT_end                 8               ZT hour for baseline window end
+  prefer_occurrence      1               Use first occurrence of ZT window
+  gap_threshold          100             Index gap threshold for multi-day split
+  colormap               magma           Animal color coding
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - pandas
+  - matplotlib          (pyplot)
+  - scipy               (stats.linregress, stats.ttest_1samp, signal.savgol_filter)
+  - os
+  - importlib
+
+Custom packages:
+  - PKA_Sleep
+      Primary analysis package.
+      Explicitly reloads: PKA.AntagonistAnalyses, PKA.twomodel.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+  - neuroscience_sleep_scoring
+      Sleep state utilities (SWS_utils).
+      Used internally by FLiPExperiment.
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Figure saved to:
+  /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/Thesis_Figures/
+  Component_Figures/Figure_6/wake_change_amp.ps
+
+================================================================================

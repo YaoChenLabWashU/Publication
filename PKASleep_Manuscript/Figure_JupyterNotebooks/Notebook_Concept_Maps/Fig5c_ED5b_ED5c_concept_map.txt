@@ -1,0 +1,179 @@
+================================================================================
+CONCEPT MAP: Fig5c_ED5b_ED5c.ipynb
+================================================================================
+
+PURPOSE
+-------
+Plots Delta EEG power trajectories during NREM bouts, binned by bout length,
+for all 24 mPFC FLIM-mAKAR experiments. Tests whether Delta power increases
+or decreases with NREM bout length using Wilcoxon signed-rank tests and
+Mann-Whitney U tests. Produces Figure 5c, Extended Data Figure 5b, and
+Extended Data Figure 5c for the manuscript.
+
+
+--------------------------------------------------------------------------------
+DATA
+--------------------------------------------------------------------------------
+
+Source directory: /Volumes/yaochen/Active/Lizzie/FLP_data/
+Baseline indices: /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/
+                  FLiP_Experiment_Summary.xlsx
+Brain region: mPFC; Sensor: FLIM-mAKAR
+
+24 recordings, 18 animals:
+
+  Experiment ID                  Mouse ID
+  ltFLiPAKARmemEEGEMG0009        3825
+  ltFLiPAKARmemEEGEMG0010        3825
+  dgFLiPmemAKAREEGEMG0003        3825
+  dgFLiPmemAKAREEGEMG0008        3825
+  ltFLiPAKARmemEEGEMG0036        4346-t5-7
+  ltFLiPAKARmemEEGEMG0043        4346-t5-7
+  kgFLiPAKAREEGEMG0009           4507
+  ltFLiPAKARmemEEGEMG0055        4502
+  ltFLiPAKARmemEEGEMG0068        4507
+  ltFLiPAKARmemEEGEMG0072        4610
+  ltFLiPAKARmemEEGEMG0085        4713
+  ltFLiPAKARmemEEGEMG0090-1      4769
+  ltFLiPAKARmemEEGEMG0094        4775
+  ltFLiPAKARmemEEGEMG0097-1      5782
+  ltFLiPAKARmemEEGEMG0098-1      5007
+  ltFLiPAKARmemEEGEMG0099-1      5075
+  ltFLiPAKARmemEEGEMG0099-2      5075
+  ltFLiPAKARmemEEGEMG0100-1      5078
+  ltFLiPAKARmemEEGEMG0101-1      5046
+  ltFLiPAKARmemEEGEMG0102-1      5047
+  ltFLiPAKARmemEEGEMG0103-1      5076
+  kgFLiPAKAREEGEMG0018           5582
+  kgFLiPAKAREEGEMG0019           5583
+  kgFLiPAKAREEGEMG0020           5577
+
+Raw file format: .mat files (concat*.mat) in each experiment folder.
+Exclusion rule: First 3 acquisitions excluded; baseline range from spreadsheet.
+
+
+--------------------------------------------------------------------------------
+PROCESSING PIPELINE
+--------------------------------------------------------------------------------
+
+Raw .mat files
+  |
+  +--> choose_excluded_acqs()
+  |      first_acqs = 3; pull_baseline = True from Excel.
+  |
+  +--> build_classes()
+  |      sleep_states = True; microarousals = True
+  |      |
+  |      +--> FLiPExperiment()  [called internally]
+  |             Loads .mat, extracts FLiP lifetime, sleep states.
+  |
+  +--> PKA.transition_triggered_lifetime()
+  |      NREM-Wake transitions only; window = [300, 30] s
+  |      zscore = True; just_dictionary = True (returns raw dict, no plot)
+  |
+  +--> PKA.transition_triggered_power()
+  |      Aligns Delta EEG power to NREM-Wake transition.
+  |      freq_band = Delta [0.5, 4] Hz; EEG channel = 0
+  |      window_length = 10 s; noverlap = 9 s
+  |
+  +--> [Binning by NREM bout length]
+  |      bin edges = np.arange(50, 300, 50) → 4 bins: 50-100, 100-150, 150-200, 200-250 s
+  |
+  +--> PKA.plot_binned_power_p2()
+  |      Plots mean ± SEM Delta power traces per bin.
+  |      norm_val = mean of all Delta power across all bouts
+  |
+  +--> scipy.stats.wilcoxon()
+  |      One-sample, alt='less': tests if normalized power < 1 in late NREM.
+  |
+  +--> scipy.stats.mannwhitneyu()
+         Tests for difference in peak Delta power between short and long bouts.
+
+
+--------------------------------------------------------------------------------
+CUSTOM FUNCTIONS CALLED (directly in notebook)
+--------------------------------------------------------------------------------
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  PKA.choose_excluded_acqs()        PKA_Sleep.PKA_utils     PKA_utils.py : line 1607
+  PKA.build_classes()               PKA_Sleep.PKA_utils     PKA_utils.py : line 309
+  PKA.transition_triggered_         PKA_Sleep.              genPKA_Dynamics.py : line 17
+    lifetime()                        genPKA_Dynamics
+  PKA.transition_triggered_power()  PKA_Sleep.              genPKA_Dynamics.py
+                                      genPKA_Dynamics
+  PKA.plot_binned_power_p2()        PKA_Sleep.PKA_utils     PKA_utils.py
+  graph.make_bigandbold()           PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 40
+  graph.thick_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py
+  graph.label_axes()                PKA_Sleep.Graphing_Utils Graphing_Utils.py : line 59
+
+Functions called internally (not directly in notebook):
+
+  Function                          Module                  File & Line
+  --------------------------------  ----------------------  ---------------------------
+  FLiPExperiment()  [class]         PKA_Sleep.FLPExp_class  FLPExp_class.py : line 14
+  transition_triggered_             PKA_Sleep.              AntagonistAnalyses.py : line 340
+    average_drug()                    AntagonistAnalyses    (called within transition_
+                                                             triggered_lifetime)
+  SWS_utils                         neuroscience_sleep_     used within FLiPExperiment
+                                      scoring
+
+PKA_Sleep package source:
+  /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+
+
+--------------------------------------------------------------------------------
+KEY PARAMETERS
+--------------------------------------------------------------------------------
+
+  Parameter              Value               Meaning
+  ---------------------  ------------------  ----------------------------------------
+  epoch_len              4 s                 Sleep scoring epoch length
+  microarousals          True                Wake bouts < 16 s relabeled as MA
+  window                 [300, 30] s         Pre-transition window (long NREM)
+  zscore                 True                Z-scored FLiP lifetime
+  just_dictionary        True                Return dict only, no figure
+  freq_band              Delta [0.5, 4] Hz   EEG band for power
+  EEG channel            0                   Primary EEG channel
+  window_length          10 s                Spectrogram window
+  noverlap               9 s                 Spectrogram overlap
+  bin_edges              np.arange(50,       4 bins for NREM bout length (s)
+                           300, 50)
+  bins (result)          [50-100, 100-150,   NREM bout length bins
+                          150-200, 200-250]
+  norm_val               mean of all Delta   Normalization denominator
+                           power
+
+
+--------------------------------------------------------------------------------
+PYTHON DEPENDENCIES
+--------------------------------------------------------------------------------
+
+Standard library / scientific stack:
+  - numpy
+  - matplotlib          (pyplot, cm)
+  - scipy               (stats.wilcoxon, stats.mannwhitneyu)
+  - pandas
+  - os
+  - statsmodels         (formula.api as smf)
+
+Custom packages:
+  - PKA_Sleep
+      Primary analysis package.
+      Source: /Users/lizzie/Desktop/Remote_Git/Chen_Lab/PKA_Sleep/PKA_Sleep/
+  - neuroscience_sleep_scoring
+      Sleep state utilities (SWS_utils).
+      Used internally by FLiPExperiment.
+
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+Figures saved to:
+  /Users/lizzie/Library/CloudStorage/Box-Box/ChenLab/Lizzie/Thesis_Figures/
+  Component_Figures/Figure_6/
+  mPFC_deltaaverages_norm_NREM.ps
+  mPFC_scatter.ps
+
+================================================================================
